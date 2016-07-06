@@ -9,7 +9,6 @@
                 "cartocss":
                 "
                   #layer {
-                      polygon-fill: #FFF;
                       line-color: #ccc;
                       line-width: 0.5;
                     }
@@ -27,7 +26,6 @@
                 "
                   #layer {
                       ::shape {
-                        polygon-fill: #FFF;
                         line-color: #ccc;
                         line-width: 0.5;
                       }
