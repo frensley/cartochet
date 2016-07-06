@@ -1,0 +1,29 @@
+{
+    "version": "1.0.1",
+    "name": "streets",
+    "layers": [
+        {
+            "type": "mapnik",
+            "options": {
+                "cartocss_version": "2.1.1",
+                "cartocss":
+                "
+                  #layer {
+                      ::shape {
+                        line-color: #ccc;
+                        line-width: 3;
+                      }
+                      ::label [zoom >= 16]{
+                        text-name: [street];
+                        text-face-name: 'Arial Regular';
+                        text-placement: line;
+                      }
+                    }
+                ",
+                "geom_column": "geom",
+                "sql": "select * from kyle_streets_feb2015",
+                "srid": 3857
+            }
+        }
+    ]
+}

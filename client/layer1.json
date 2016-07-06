@@ -1,0 +1,50 @@
+{
+    "version": "1.0.1",
+    "name": "states and parcels" ,
+    "layers": [
+        {
+            "type": "mapnik",
+            "options": {
+                "cartocss_version": "2.1.1",
+                "cartocss":
+                "
+                  #layer {
+                      polygon-fill: #FFF;
+                      line-color: #ccc;
+                      line-width: 0.5;
+                    }
+                ",
+                "geom_column": "geom",
+                "sql": "select * from us_state",
+                "srid": 3857
+            }
+        },
+        {
+            "type": "mapnik",
+            "options": {
+                "cartocss_version": "2.1.1",
+                "cartocss":
+                "
+                  #layer {
+                      ::shape {
+                        polygon-fill: #FFF;
+                        line-color: #ccc;
+                        line-width: 0.5;
+                      }
+                      ::label [zoom >= 18]{
+                        text-name: [address];
+                        text-face-name: 'Arial Regular';
+                      }
+                    }
+                ",
+                "geom_column": "geom",
+                "sql": "select * from kyle_parcels_feb2015",
+                "srid": 3857,
+                "attributes": {
+                  "id": "gid",
+                  "columns": ["address"]
+                }
+            }
+        }
+    ]
+}

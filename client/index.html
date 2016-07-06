@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Windshaft test</title>
+    <meta charset="utf-8" />
+    <script src="http://underscorejs.org/underscore-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet.utfgrid.js"></script>
+    <script src="js/viewer.js"></script>
+    <link rel="stylesheet" href="css/leaflet.css" />
+
+    <script>
+        var baseURL_def = "http://localhost:4000/database/sfrensley/layergroup";
+        var layer_configs = ["layer1","layer2"];
+
+        $(document).ready(function() {
+            //new map
+           var map = new L.Map('map', {
+                maxZoom: 18
+           });
+            //starting position of map
+            map.setView(new L.LatLng(29.9891, -97.8772), 11, true);
+
+            var viewer = new Viewer(map, layer_configs, baseURL_def);
+
+        });
+      </script>
+</head>
+<body>
+    <div id="map" style="width: 100%; height: 800px;"></div>
+</body>
+</html>
