@@ -13,8 +13,9 @@ Simple client server example using Windshaft layer groups
 
 >psql -d sfrensley -f kyle_parcels.sql
 
-shp2pgsql -s 2278:3857 Kyle_Streets_Feb2015.shp > kyle_streets.sql
-psql -d sfrensley -f kyle_streets.sql
+>shp2pgsql -s 2278:3857 Kyle_Streets_Feb2015.shp > kyle_streets.sql
+
+>psql -d sfrensley -f kyle_streets.sql
 
 ## Add necessary database functions
 * test/sql/CDB_QueryStatement.sql
