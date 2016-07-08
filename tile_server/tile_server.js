@@ -7,6 +7,7 @@ var windshaft = require('windshaft/lib/windshaft');
 
 var StaticMapsController = require('./controllers/static_maps');
 var MapController = require('./controllers/map');
+var ConfigController = require('./controllers/config');
 var PgMapstore = require('./storages/pg_mapstore.js');
 //
 // @param opts server options object. Example value:
@@ -151,6 +152,9 @@ module.exports = function(opts) {
 
     var staticMapsController = new StaticMapsController(app, map_store, previewBackend);
     staticMapsController.register(app);
+
+    var configController = new ConfigController(app, map_store);
+    configController.register(app);
 
     // simple testable route
     app.get('/', function(req, res) {

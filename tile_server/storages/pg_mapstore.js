@@ -58,7 +58,7 @@ o._get = function(key) {
   return this._config[key];
 };
 
-/// Internal method: get redis pool
+/// Internal method: get pg pool
 o._pgPool = function() {
   return this.pg_pool;
 };
@@ -156,5 +156,10 @@ o.del = function(id, callback) {
   console.log('delete');
 };
 
+o.listLayers = function(callback) {
+     this._pgCmd("SELECT map_id, map_config FROM map_config", [], function(err, result) {
+          callback(err,result);
+     });
+}
 
 module.exports = MapStore;
