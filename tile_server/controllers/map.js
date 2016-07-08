@@ -3,7 +3,7 @@ var step = require('windshaft/node_modules/step');
 var windshaft = require('../../node_modules/windshaft/lib/windshaft');
 
 var MapConfig = windshaft.model.MapConfig;
-var IdProvidedMapConfigProvider = require('../providers/id_provided_mapconfig_provider');
+var CartochetMapConfigProvider = require('../providers/cartochet_mapconfig_provider');
 
 var MapStoreMapConfigProvider = windshaft.model.provider.MapStoreMapConfig;
 
@@ -84,7 +84,7 @@ MapController.prototype.create = function(req, res, prepareConfigFn) {
             assert.ifError(err);
             var mapConfig = MapConfig.create(requestMapConfig);
             self.mapBackend.createLayergroup(
-                mapConfig, req.params, new IdProvidedMapConfigProvider(mapConfig, req.params), this
+                mapConfig, req.params, new CartochetMapConfigProvider(mapConfig, req.params), this
             );
         },
         function finish(err, response){
