@@ -136,7 +136,7 @@ o.save = function(map, callback) {
    var id = map.id();
    var config_id = map._cfg.config_id;
    console.log("save mapconfig: ", JSON.stringify(map, null, 2));
-   this._pgCmd("INSERT INTO map_config (map_id, config_id, map_config) VALUES ($1,$2, $3) ON CONFLICT (config_id) DO UPDATE SET (map_config, config_id) = (EXCLUDED.map_config, EXCLUDED.config_id)",
+   this._pgCmd("INSERT INTO map_config (map_id, config_id, map_config) VALUES ($1,$2, $3) ON CONFLICT (config_id) DO UPDATE SET (map_id, map_config) = (EXCLUDED.map_id, EXCLUDED.map_config)",
                [id, config_id, map.serialize()],
                function(err, result) {
                     console.log("saved map id: ", id);
