@@ -1,5 +1,6 @@
 var Viewer = function(map, layers, baseURL, baseAPI_URL) {
      this.map = map;
+     this.sidebar = L.control.sidebar('sidebar').addTo(map);
      this.layerControl = new L.control.layers({}, {}).addTo(map);
      this.layerConfigs = layers || ["layer1"];
      this.layers = [];
