@@ -1,9 +1,9 @@
 var assert = require('assert');
-var step = require('../../node_modules/windshaft/node_modules/step');
+var step = require('windshaft/node_modules/step');
 var windshaft = require('../../node_modules/windshaft/lib/windshaft');
 
 var MapConfig = windshaft.model.MapConfig;
-var DummyMapConfigProvider = require('../../node_modules/windshaft/lib/windshaft/models/providers/dummy_mapconfig_provider');
+var IdProvidedMapConfigProvider = require('../providers/id_provided_mapconfig_provider');
 
 var MapStoreMapConfigProvider = windshaft.model.provider.MapStoreMapConfig;
 
@@ -84,7 +84,7 @@ MapController.prototype.create = function(req, res, prepareConfigFn) {
             assert.ifError(err);
             var mapConfig = MapConfig.create(requestMapConfig);
             self.mapBackend.createLayergroup(
-                mapConfig, req.params, new DummyMapConfigProvider(mapConfig, req.params), this
+                mapConfig, req.params, new IdProvidedMapConfigProvider(mapConfig, req.params), this
             );
         },
         function finish(err, response){

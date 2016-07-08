@@ -1,5 +1,6 @@
 {
     "version": "1.0.1",
+    "_id": "layer2",
     "name": "streets",
     "layers": [
         {

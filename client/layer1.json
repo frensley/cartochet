@@ -1,5 +1,6 @@
 {
     "version": "1.0.1",
+    "_id": "layer1",
     "name": "states and parcels" ,
     "layers": [
         {

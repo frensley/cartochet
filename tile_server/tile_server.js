@@ -1,14 +1,13 @@
-var debug = require('../node_modules/windshaft/node_modules/debug')('windshaft:server');
+var debug = require('windshaft/node_modules/debug')('windshaft:server');
 var express = require('express');
-var RedisPool = require('../node_modules/windshaft/node_modules/redis-mpool');
-var _ = require('../node_modules/windshaft/node_modules/underscore');
-var mapnik = require('../node_modules/windshaft/node_modules/mapnik');
+var _ = require('windshaft/node_modules/underscore');
+var mapnik = require('windshaft/node_modules/mapnik');
 
-var windshaft = require('..//node_modules/windshaft/lib/windshaft');
+var windshaft = require('windshaft/lib/windshaft');
 
 var StaticMapsController = require('./controllers/static_maps');
 var MapController = require('./controllers/map');
-
+var PgMapstore = require('./storages/pg_mapstore.js');
 //
 // @param opts server options object. Example value:
 //     {
@@ -70,12 +69,8 @@ module.exports = function(opts) {
     var app = bootstrap(opts);
     addFilters(app, opts);
 
-    var redisPool = makeRedisPool(opts.redis);
 
-    var map_store  = new windshaft.storage.MapStore({
-        pool: redisPool,
-        expire_time: opts.grainstore.default_layergroup_ttl
-    });
+    var map_store = new PgMapstore();
 
     opts.renderer = opts.renderer || {};
 
@@ -197,11 +192,6 @@ function validateOptions(opts) {
         console.warn('WARNING: detected mapnik version (' + mapnik.versions.mapnik + ')' +
             ' != configured mapnik version (' + opts.grainstore.mapnik_version + ')');
     }
-}
-
-function makeRedisPool(redisOpts) {
-    redisOpts = redisOpts || {};
-    return redisOpts.pool || new RedisPool(_.extend(redisOpts, {name: 'windshaft:server'}));
 }
 
 function bootstrapFonts(opts) {

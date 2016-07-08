@@ -1,6 +1,6 @@
-var step = require('../../node_modules/windshaft/node_modules/step');
+var step = require('windshaft/node_modules/step');
 var assert = require('assert');
-var windshaft = require('../../node_modules/windshaft/lib/windshaft');
+var windshaft = require('windshaft/lib/windshaft');
 
 var MapStoreMapConfigProvider = windshaft.model.provider.MapStoreMapConfig;
 
