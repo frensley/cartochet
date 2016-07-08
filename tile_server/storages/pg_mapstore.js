@@ -5,6 +5,7 @@ var _          = require('windshaft/node_modules/underscore');
 var MapConfig  = require('windshaft/lib/windshaft/models/mapconfig');
 var assert = require('assert');
 var pg = require('pg');
+var step       = require('windshaft/node_modules/step');
 
 /**
  * @constructor
@@ -100,8 +101,29 @@ o._pgCmd = function(sql, args, callback) {
 ///
 o.load = function(id, callback) {
   var that = this;
-
-  console.log('load');
+  console.log('load: ', id);
+  this._pgCmd("SELECT map_config FROM map_config WHERE map_id = $1", [id], function(err, results) {
+     assert.ifError(err);
+     if ( results.rowCount == 0 ) {
+          throw new Error("Invalid or nonexistent map configuration token '" + id + "'");
+     }
+     step(
+        function processResults() {
+          return results.rows[0].map_config;
+        },
+        function instantiateConfig(err, serializedMapConfig) {
+           assert.ifError(err);
+           var obj = MapConfig.create(serializedMapConfig);
+           //serialization to PG breaks stuff
+           obj._id = id;
+           console.log("object: ", JSON.stringify(obj, null, 2));
+           return obj;
+        },
+        function finish(err, obj) {
+           callback(err, obj);
+        }
+   ); //step
+  }); // pgCmd
 };
 
 /// API: store map to redis
@@ -111,10 +133,11 @@ o.load = function(id, callback) {
 ///
 o.save = function(map, callback) {
    //accept map with and id already
-   var id = map._cfg._id || map.id();
-   console.log(JSON.stringify(map, null, 2));
-   this._pgCmd("INSERT INTO map_config (map_id, map_config) VALUES ($1,$2) ON CONFLICT (map_id) DO UPDATE SET map_config = EXCLUDED.map_config",
-               [id, map.serialize()],
+   var id = map.id();
+   var config_id = map._cfg.config_id;
+   console.log("save mapconfig: ", JSON.stringify(map, null, 2));
+   this._pgCmd("INSERT INTO map_config (map_id, config_id, map_config) VALUES ($1,$2, $3) ON CONFLICT (config_id) DO UPDATE SET (map_config, config_id) = (EXCLUDED.map_config, EXCLUDED.config_id)",
+               [id, config_id, map.serialize()],
                function(err, result) {
                     console.log("saved map id: ", id);
                     callback(err);

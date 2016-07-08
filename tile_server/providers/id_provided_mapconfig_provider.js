@@ -3,9 +3,9 @@ var MapStoreMapConfigProvider = require('windshaft/lib/windshaft/models/provider
 
 function IdProvidedMapConfigProvider(mapConfig, params) {
     MapStoreMapConfigProvider.call(this, undefined, params);
-    mapConfig.id = function () {
-        return mapConfig._cfg._id;
-    };
+   //  mapConfig.id = function () {
+   //      return mapConfig._cfg._id;
+   //  };
     this.mapConfig = mapConfig;
 }
 
