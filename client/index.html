@@ -15,6 +15,7 @@
 
     <script>
         var baseURL_def = "http://localhost:4000/database/sfrensley/layergroup";
+        var baseAPI_URL = "http://localhost:4000/api";
         var layer_configs = ["layer1","layer2"];
 
         $(document).ready(function() {
@@ -25,7 +26,7 @@
             //starting position of map
             map.setView(new L.LatLng(29.9891, -97.8772), 11, true);
 
-            var viewer = new Viewer(map, layer_configs, baseURL_def);
+            var viewer = new Viewer(map, layer_configs, baseURL_def, baseAPI_URL);
 
         });
       </script>

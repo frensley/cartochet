@@ -1,17 +1,31 @@
-var Viewer = function(map, layers, baseURL) {
+var Viewer = function(map, layers, baseURL, baseAPI_URL) {
      this.map = map;
      this.layerControl = new L.control.layers({}, {}).addTo(map);
      this.layerConfigs = layers || ["layer1"];
      this.layers = [];
      this.baseURL = baseURL || "http://localhost:4000/database/sfrensley/layergroup";
+     this.baseAPI_URL = baseAPI_URL || "http://localhost:4000/api"
      this.initialize();
 };
 
 Viewer.prototype.initialize = function() {
      var scope = this;
-     this.layerConfigs.map(function(config) {
-          scope.getLayerConfigs(config);
-     });
+   //   this.layerConfigs.map(function(config) {
+   //        scope.getLayerConfigs(config);
+   //   });
+      $.ajax({
+         url: baseAPI_URL + '/config/list',
+         success: function(data, status, jqXHR) {
+             console.info("success getLayerConfig: ",data);
+             data.map(function(config) {
+               console.log(config);
+               scope.configureLayer(config.map_config);
+          });
+         },
+         error: function(error) {
+             console.info("error getLayerConfig: ",error);
+         }
+      });
 };
 
 Viewer.prototype.getLayerConfigs = function(name) {
@@ -54,6 +68,28 @@ Viewer.prototype.configureLayer = function(layerConfig) {
      });
 };
 
+Viewer.prototype.setUtfGrid = function(baseURL, layers) {
+      var scope = this;
+      console.log("usf layers", layers);
+      layers.forEach(function(layer, layerIndex) {
+         var utfGridLayer = new L.UtfGrid(baseURL + '/' + layerIndex + '/{z}/{x}/{y}.grid.json?callback={cb}');
+         var popup = new L.popup();
+         utfGridLayer.on('click', function (e) {
+           if (e.data) {
+             popup.setLatLng(e.latlng)
+             .setContent(JSON.stringify(e.data))
+             .openOn(scope.map);
+
+             console.log('click', e.data);
+           } else {
+             console.log('click nothing');
+           }
+         });
+         scope.map.addLayer(utfGridLayer);
+         scope.layers.push(utfGridLayer);
+      });
+};
+
 Viewer.prototype.setMapLayer = function(token, metadata, name) {
      var scope = this;
      metadata = metadata || {};
@@ -62,5 +98,6 @@ Viewer.prototype.setMapLayer = function(token, metadata, name) {
      var tileLayer = new L.tileLayer(tileBaseURL + '/{z}/{x}/{y}.png');
      scope.map.addLayer(tileLayer);
      scope.layers.push(tileLayer);
+     scope.setUtfGrid(tileBaseURL, metadataLayers);
      scope.layerControl.addOverlay(tileLayer, name);
 };
