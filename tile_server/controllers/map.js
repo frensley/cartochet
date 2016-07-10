@@ -27,10 +27,11 @@ module.exports = MapController;
 
 
 MapController.prototype.register = function(app) {
+   console.log('maps', app.base_url_mapconfig);
     app.get(app.base_url_mapconfig + '/:token/:z/:x/:y@:scale_factor?x.:format', this.tile.bind(this));
     app.get(app.base_url_mapconfig + '/:token/:z/:x/:y.:format', this.tile.bind(this));
     app.get(app.base_url_mapconfig + '/:token/:layer/:z/:x/:y.(:format)', this.layer.bind(this));
-
+    app.get(app.base_url_mapconfig + '/list', this.listLayers.bind(this));
     app.get(app.base_url_mapconfig, this.createGet.bind(this));
     app.post(app.base_url_mapconfig, this.createPost.bind(this));
     app.get(app.base_url_mapconfig + '/:token/:layer/attributes/:fid', this.attributes.bind(this));
@@ -69,6 +70,16 @@ MapController.prototype.attributes = function(req, res) {
         }
     );
 
+};
+
+MapController.prototype.listLayers = function(req, res) {
+    this._app.doCORS(res);
+    this.mapStore.listLayers(function(err,results) {
+      if (err) {
+         res.json(err);
+      }
+      res.json(results.rows);
+    });
 };
 
 MapController.prototype.create = function(req, res, prepareConfigFn) {

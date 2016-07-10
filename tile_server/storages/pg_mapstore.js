@@ -153,7 +153,8 @@ o.save = function(map, callback) {
 o.del = function(id, callback) {
   var that = this;
   var key = this._get("pg_key_mapcfg_prefix") + id;
-  console.log('delete');
+  console.trace('delete');
+  callback({},{});
 };
 
 o.listLayers = function(callback) {

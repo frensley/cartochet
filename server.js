@@ -16,7 +16,6 @@ global.environment  = require('./tile_server/config/environments/' + ENV);
 _.extend(global.settings, global.environment);
 
 var config = {
-    base_url_config: '/api/config',
     base_url: '/database/:dbname/table/:table',
     base_url_mapconfig: '/database/:dbname/layergroup',
     grainstore: {

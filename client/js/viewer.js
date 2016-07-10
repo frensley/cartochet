@@ -1,11 +1,9 @@
-var Viewer = function(map, layers, baseURL, baseAPI_URL) {
+var Viewer = function(map, baseURL) {
      this.map = map;
      this.sidebar = L.control.sidebar('sidebar').addTo(map);
      this.layerControl = new L.control.layers({}, {}).addTo(map);
-     this.layerConfigs = layers || ["layer1"];
      this.layers = [];
      this.baseURL = baseURL || "http://localhost:4000/database/sfrensley/layergroup";
-     this.baseAPI_URL = baseAPI_URL || "http://localhost:4000/api"
      this.initialize();
 };
 
@@ -15,7 +13,7 @@ Viewer.prototype.initialize = function() {
    //        scope.getLayerConfigs(config);
    //   });
       $.ajax({
-         url: baseAPI_URL + '/config/list',
+         url: this.baseURL + '/list',
          success: function(data, status, jqXHR) {
              console.info("success getLayerConfig: ",data);
              data.map(function(config) {
