@@ -1,6 +1,6 @@
 var Viewer = function(map, baseURL) {
      this.map = map;
-     this.sidebar = L.control.sidebar('sidebar').addTo(map);
+     this.sidebar = new Sidebar(map);
      this.layerControl = new L.control.layers({}, {}).addTo(map);
      this.layers = [];
      this.baseURL = baseURL || "http://localhost:4000/database/sfrensley/layergroup";
@@ -19,7 +19,8 @@ Viewer.prototype.initialize = function() {
              data.map(function(config) {
                console.log(config);
                scope.configureLayer(config.map_config);
-          });
+               scope.sidebar.addTab(config.map_config.config_id, "fa-map","<p>" + JSON.stringify(config, null, 2) + "</p>");
+             });
          },
          error: function(error) {
              console.info("error getLayerConfig: ",error);
