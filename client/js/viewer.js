@@ -12,6 +12,7 @@ Viewer.prototype.initialize = function() {
    //   this.layerConfigs.map(function(config) {
    //        scope.getLayerConfigs(config);
    //   });
+
       $.ajax({
          url: this.baseURL + '/list',
          success: function(data, status, jqXHR) {
@@ -19,7 +20,21 @@ Viewer.prototype.initialize = function() {
              data.map(function(config) {
                console.log(config);
                scope.configureLayer(config.map_config);
-               scope.sidebar.addTab(config.map_config.config_id, "fa-map","<p>" + JSON.stringify(config, null, 2) + "</p>");
+               var description =
+                  '<div class="viewer-editor-field">' +
+                  '<input id="' + config.map_config.config_id +'" name="' + config.map_config.config_id +'" type="text" required>' +
+                  '<label for="' + config.map_config.config_id +'">Layer Name</label>' +
+                  '</div>';
+               var layer =
+                  '<div class="viewer-editor-field viewer-sql-editor">' +
+                  '<textarea class="viewer-editor viewer-style-editor" id="sql" name="sql">' + JSON.stringify(config, null, 2) + '</textarea>' +
+                  '<label for="sql" >SQL</label>' +
+                  '</div>' +
+                  '<div class="viewer-editor-field viewer-style-editor">' +
+                  '<textarea class="viewer-editor viewer-sql-editor" id="style" name="style">' + JSON.stringify(config, null, 2) + '</textarea>' +
+                  '<label for="style" >Style</label>' +
+                  '</div>';
+               scope.sidebar.addTab(config.map_config.config_id, "fa-map", description + layer);
              });
          },
          error: function(error) {
