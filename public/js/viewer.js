@@ -17,24 +17,56 @@ Viewer.prototype.initialize = function() {
          url: this.baseURL + '/list',
          success: function(data, status, jqXHR) {
              console.info("success getLayerConfig: ",data);
-             data.map(function(config) {
+             _.each(data,function(config, index) {
                console.log(config);
                scope.configureLayer(config.map_config);
-               var description =
+               var config_data = JSON.stringify(config, null, 2);
+               var context = {
+                  config_id : config.map_config.config_id,
+                  layer_name : config.map_config.name,
+                  config_data: config_data
+               };
+               var _template_tmpl = _.template(
+                  '<form id="<%= config_id %>" class="viewer-editor-form tab_container">' +
                   '<div class="viewer-editor-field">' +
-                  '<input id="' + config.map_config.config_id +'" name="' + config.map_config.config_id +'" type="text" required>' +
-                  '<label for="' + config.map_config.config_id +'">Layer Name</label>' +
-                  '</div>';
-               var layer =
-                  '<div class="viewer-editor-field viewer-sql-editor">' +
-                  '<textarea class="viewer-editor viewer-style-editor" id="sql" name="sql">' + JSON.stringify(config, null, 2) + '</textarea>' +
-                  '<label for="sql" >SQL</label>' +
+                  '<input name="layer_name" type="text" value="<%= layer_name %>" required>' +
+                  '<label for="layer_name">Layer Name</label>' +
                   '</div>' +
-                  '<div class="viewer-editor-field viewer-style-editor">' +
-                  '<textarea class="viewer-editor viewer-sql-editor" id="style" name="style">' + JSON.stringify(config, null, 2) + '</textarea>' +
-                  '<label for="style" >Style</label>' +
-                  '</div>';
-               scope.sidebar.addTab(config.map_config.config_id, "fa-map", description + layer);
+                  '<ul class="tabs">'
+               );
+               var _tab_content_tmpl = _.template(
+                  '<li>' +
+                     '<input id="tab<%= layer_idx %><%= index %>" type="radio" name="tabs" <%= checked %>>' +
+                     '<label for="tab<%= layer_idx %><%= index %>"><i class="fa fa-folder"></i><span>Layer <%= index %></span></label>' +
+                     '<div id="tab-content<%= layer_idx %><%= index %>" class="tab-content animated fadeIn">' +
+                        '<div class="viewer-editor-field viewer-sql-editor">' +
+                           '<textarea class="viewer-sql-editor" id="sql" name="sql"><%= sql %></textarea>' +
+                           '<label for="sql" >SQL</label>' +
+                        '</div>' +
+                        '<div class="viewer-editor-field viewer-style-editor">' +
+                           '<textarea class="viewer-style-editor" id="style" name="style"><%= css %></textarea>' +
+                           '<label for="style" >Style</label>' +
+                        '</div>' +
+                     '</div>' +
+                  '</li>'
+               );
+               var tab_content = content = '';
+               var layer_idx = index;
+               _.each(config.map_config.layers, function(layer, index) {
+                  var context = {
+                     checked: index == 0 ? 'checked' : '',
+                     index: index,
+                     layer_idx: layer_idx,
+                     sql: layer.options.sql,
+                     css: layer.options.cartocss
+                  }
+                  tab_content += _tab_content_tmpl(context);
+                  console.log("layer:", JSON.stringify(layer, null, 2));
+               });
+               content += _template_tmpl(context);
+               content += tab_content;
+               content += '</ul><input value="Save" type="button"></form>';
+               scope.sidebar.addTab(config.map_config.config_id, "fa-map", content);
              });
          },
          error: function(error) {

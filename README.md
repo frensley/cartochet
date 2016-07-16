@@ -26,3 +26,23 @@ Simple client server example using Windshaft layer groups
 
 ## Run client
 >npm run-script client
+
+
+Some Contributing projects (definitely not all):
+Leaflet
+http://leafletjs.com/
+
+Windshaft
+https://github.com/CartoDB/Windshaft
+
+Tabbed panels
+http://code.stephenmorley.org/html-and-css/tabbed-panels/
+
+Floating CSS labels
+https://css-tricks.com/float-labels-css/
+
+Leaflet Sidebar
+https://github.com/Turbo87/leaflet-sidebar
+
+Underscore
+http://underscorejs.org/
