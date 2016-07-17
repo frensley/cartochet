@@ -5,145 +5,44 @@
    box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
-.sidebar-pane {
+/*.tab-container {
+   width: 100%;
+   height: 95%;
+}*/
+/*.tab-container div {
    height: 100%;
-}
-
-#sidebar-content {
+   width: 100%;
+   padding: 0em !important;
+}*/
+/*.sidebar-content {
+   height: 100%;
+}*/
+.sidebar-pane {
    height: 95%;
 }
 
-.viewer-editor-form {
-   height: 100%;
-}
-
-.viewer-editor-field.viewer-sql-editor {
-   height: 2.5em;
-}
-
-.viewer-editor-field.viewer-style-editor {
-   height: 60%;
-}
-
-/* https://css-tricks.com/float-labels-css/ */
-.viewer-editor-field {
-   position: relative;
-   /*margin-top: 10px;*/
-}
-
-.viewer-editor-field > input, .viewer-editor-field > textarea {
-   position: relative;
-   background: none;
+/*#sidebar-container {
    height: 100%;
    width: 100%;
-   z-index: 1;
-   padding: 8px 12px;
-   border: 2px solid gray;
-   outline: 0;
+}*/
+
+/*.editor-form {
+   height: 100%;
+   width: 100%;
+}*/
+/*.editor-field {
+   width: inherit;
+}*/
+
+.sql-editor {
+   height: 2.5em;
+   width: 100%;
+   height: 20%;
    resize: none;
 }
 
-textarea.viewer-style-editor {
-   border-top: none;
-}
-
-.viewer-editor-field > label {
+.style-editor {
+   height: 60%;
    width: 100%;
-   top: 0;
-   bottom: 0;
-   left: 0;
-   position: absolute;
-   transition: 0.2s;
-   padding: 7px 6px;
-   color: #999;
-}
-
-.viewer-editor-field > input:focus,  .viewer-editor-field > textarea:focus {
-   border-color: #f06d06;
-   padding: 4px 6px 12px 6px;
-}
-
-.viewer-editor-field > input:focus + label, .viewer-editor-field > textarea:focus + label {
-  background: #f06d06;
-  top: 100%;
-  margin-top: -12px;
-  z-index: 2;
-  text-transform: uppercase;
-  font-size: 50%;
-  color: white;
-  padding: 1px 6px;
-}
-
-.viewer-editor-field > input:valid,  .viewer-editor-field > textarea:valid {
-   background: white;
-}
-
-.tabs > li > input[type=radio] {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-}
-.tabs {
-  width: 100%;
-  height: 87%;
-  float: none;
-  list-style: none;
-  position: relative;
-  padding: 0;
-  /*margin: 75px auto;*/
-}
-.tabs > li{
-  float: left;
-}
-.tabs > li > label {
-    display: block;
-    /*padding: 10px 20px;*/
-    border-radius: 2px 2px 0 0;
-    color: #08C;
-    /*font-size: 24px;*/
-    font-weight: normal;
-    /*font-family: 'Lily Script One', helveti;*/
-    background: rgba(255,255,255,0.2);
-    cursor: pointer;
-    position: relative;
-    top: 3px;
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
-}
-.tabs > li > label:hover {
-  background: rgba(100,255,255,0.5);
-  top: 0;
-}
-
-[id^=tab]:checked + label {
-  background: grey;
-  color: white;
-  top: 0;
-}
-
-[id^=tab]:checked ~ [id^=tab-content] {
-    display: block;
-}
-.tab-content {
-  z-index: 2;
-  display: none;
-  text-align: left;
-  width: 100%;
-  height: 100%;
-  font-size: 20px;
-  /*line-height: 140%;*/
-  /*padding-top: 10px;*/
-  /*background: #08C;*/
-  /*padding: 15px;*/
-  color: white;
-  position: absolute;
-  /*top: 53px;*/
-  left: 0;
-  box-sizing: border-box;
-  -webkit-animation-duration: 0.5s;
-  -o-animation-duration: 0.5s;
-  -moz-animation-duration: 0.5s;
-  animation-duration: 0.5s;
+   resize: none;
 }
