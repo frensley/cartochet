@@ -135,10 +135,14 @@ Sidebar.prototype.savePanel = function(config_id) {
     var tabsize = form.find('li.ui-tabs-tab').length
     //serialize form data into object
     var formdata = transForm.serialize(config_id)
+    console.log("form data is : ", JSON.stringify(formdata));
     //transform data to domething managable
-    var data = [];
+    var data = {
+        layer_name: formdata.layer_name,
+        options: []
+    };
     for (var i=0; i < tabsize; i++) {
-        data.push({
+        data.options.push({
             sql: formdata['sql' + i],
             style: formdata['style' + i]
         })

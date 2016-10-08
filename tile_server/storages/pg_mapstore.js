@@ -55,7 +55,7 @@ var o = MapStore.prototype;
 
 var _jsonb_set_template = _.template("jsonb_set(<%= target %>, '<%= path %>', '<%= value %>')");
 var jsonb_set = function(target, path, value) {
-    return _jsonb_set_template({target: target, path: path, value: value});
+    return _jsonb_set_template({target: target, path: path, value: JSON.stringify(escape(value))});
 }
 var escape = function(string) {
     var escaped = string.replace(/'/g,"''");
@@ -157,21 +157,29 @@ o.save = function(map, callback) {
 
 // id is the config_id in map_config table
 // options is an array of objects that contain the updated sql and cartocss
-o.updateOptions = function(id, options, callback) {
+o.updateOptions = function(id, data, callback) {
     console.log("updating options for id", id);
-    console.log("updating options ", options);
-    if (Array.isArray(options)) {
-        var len = options.length;
-        for (var i = 0; i < len; i++) {
-            var sql = jsonb_set("map_config", "{layers," + i + ", options, sql}", JSON.stringify(escape(options[i].sql)));
-            var cartocss = jsonb_set(sql, "{layers," + i + ", options, cartocss}", JSON.stringify(escape(options[i].style)));
-            console.log('options' + i + ': ' + cartocss);
-            this._pgCmd("UPDATE map_config SET map_config = " + cartocss + " where config_id = '"+ id +"'", [], function(err) {
-                console.log('updated ' + i);
+    console.log("updating options ", data);
+    if (data) {
+        if (Array.isArray(data.options)) {
+            var len = data.options.length;
+            for (var i = 0; i < len; i++) {
+                var set = jsonb_set("map_config", "{layers," + i + ", options, sql}", data.options[i].sql);
+                set = jsonb_set(set, "{layers," + i + ", options, cartocss}", data.options[i].style);
+                console.log('options' + i + ': ' + set);
+                this._pgCmd("UPDATE map_config SET map_config = " + set + " where config_id = '" + id + "'", [], function (err) {
+                    console.log('updated options' + i);
+                });
+            }
+        }
+        if (data.layer_name) {
+            var set = jsonb_set("map_config", "{name}", data.layer_name);
+            this._pgCmd("UPDATE map_config SET map_config = " + set + " where config_id = '" + id + "'", [], function (err) {
+                console.log('updated layer name');
             });
         }
     }
-    callback({},{});
+    callback(null,null);
 }
 
 
@@ -185,7 +193,7 @@ o.del = function(id, callback) {
   var that = this;
   var key = this._get("pg_key_mapcfg_prefix") + id;
   console.trace('delete');
-  callback({},{});
+  callback(null,null);
 };
 
 o.listLayers = function(callback) {
