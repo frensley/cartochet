@@ -71,7 +71,11 @@ Viewer.prototype.setUtfGrid = function(baseURL, layers) {
       var scope = this;
       console.log("usf layers", layers);
       layers.forEach(function(layer, layerIndex) {
-         var utfGridLayer = new L.UtfGrid(baseURL + '/' + layerIndex + '/{z}/{x}/{y}.grid.json?callback={cb}');
+         var utfGridLayer = L.utfGrid(baseURL + '/' + layerIndex + '/{z}/{x}/{y}.grid.json', {
+             resolution: 4,
+             pointerCursor: true,
+              mouseInterval: 66  // Delay for mousemove events
+      });
          var popup = new L.popup();
          utfGridLayer.on('click', function (e) {
            if (e.data) {
