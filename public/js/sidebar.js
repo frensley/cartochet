@@ -1,6 +1,21 @@
-var Sidebar = function(map) {
-   this.bar = L.control.sidebar('sidebar').addTo(map);
-   this.tabs = {};
+var Sidebar = function(map, baseURL) {
+    this.bar = L.control.sidebar('sidebar').addTo(map);
+    this.baseURL = baseURL;
+    this.tabs = {};
+    // $(window).resize(function(e) {
+    //    console.log("resized",e);
+    //    // $('.sidebar-pane .active').fitToParent();
+    //    // $('.sidebar-pane.active > .sidebar-container').fitToParent();
+    //    // $('.sidebar-pane.active > .sidebar-container > form').fitToParent();
+    //    //fit the active sidebar pane to the new sidebar content size
+    //    // $('.sidebar-pane .active').fitToParent({
+    //    //    height_offset: 600,
+    //    //    callback: function(newWidth, newHeight) {
+    //    //       console.log('height',newHeight);
+    //    //       $('.sidebar-pane.active > .sidebar-container > form')[0].css("height",newHeight);
+    //    //    }
+    //    // });
+    // });
 };
 
 Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
@@ -11,11 +26,11 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    //form container
    var _template_tmpl = _.template('\
       <form id="<%= config_id %>" class="editor-form">\
-         <input name="layer_name" type="text" value="<%= layer_name %>" required>\
          <div id="tabs<%= layer_idx %>" class="tab-container">\
+            <input name="layer_name" type="text" value="<%= layer_name %>" class="editor-field" required>\
             <ul></ul>\
          </div>\
-         <input value="Save" type="button">\
+         <input value="Save" type="button" id="<%= config_id %>_save">\
       </form>\
    ');
 
@@ -28,9 +43,9 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
 
    //layergroup config tab content
    var _tab_content_tmpl = _.template('\
-      <div id="tabs<%= layer_idx %><%= index %>">\
-         <textarea class="sql-editor" id="sql" name="sql"><%= sql %></textarea>\
-         <textarea class="style-editor" id="style" name="style"><%= css %></textarea>\
+      <div id="tabs<%= layer_idx %><%= index %>" class="tab-content">\
+         <textarea class="sql-editor" id="sql<%= index %>" name="sql<%= index %>"><%= sql %></textarea>\
+         <textarea class="style-editor" id="style<%= index %>" name="style<%= index %>"><%= css %></textarea>\
       </div>\
    ');
 
@@ -46,6 +61,12 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    //generate the form container for the sidebar tab
    var content = $.parseHTML(_template_tmpl(context));
 
+   //click handler for form save
+   $(content).find("input[id=" + context.config_id + "_save]").on('click', function(e) {
+      var self = this;
+      self.savePanel(context.config_id);
+      console.log('click ', context.config_id);
+   }.bind(this));
    //for each layer in the layergroup generate a tab for each configuration
    _.each(map_config.layers, function(layer, index) {
       var context = {
@@ -54,7 +75,9 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
          sql: layer.options.sql,
          css: layer.options.cartocss
       }
+      //add tab header
       $(content).find('ul').append(_tab_header_tmpl(context));
+      //add tab content
       $(content).find('.tab-container').append(_tab_content_tmpl(context));
       console.log("layer:", JSON.stringify(layer, null, 2));
    });
@@ -71,12 +94,20 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
       }
    });
 
+   $("textarea.sql-editor").each(function(idx, el) {
+      if (!self.getCodeMirror(el)) {
+         CodeMirror.fromTextArea(el, {
+            lineNumbers: true
+         });
+      }
+   });
+
    //since CodeMirror can't figure out it's layout until the dom is visible, we refresh when the tab activates
    //this does not apply to the first tab. We must use the sidebar 'content' event to refresh the first visiable tab
    $(".tab-container").each(function(idx,el) {
       $(el).tabs({
          activate: function(event, ui) {
-            self.refreshCodeMirror($(ui.newPanel).find('textarea.style-editor'));
+            self.refreshCodeMirror($(ui.newPanel).find('textarea'));
          }
       });
    });
@@ -94,13 +125,71 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
 
 }
 
-Sidebar.prototype.refreshCodeMirrorsInTab = function(target) {
-   console.log('refresh tab', target);
+Sidebar.prototype.savePanel = function(config_id) {
+    var self = this;
+    //select form we are saving
+    var form = $('form[id='+config_id+']');
+    //transfer codemirror data to text areas
+    self.saveCodeMirror(form.find('textarea'));
+    //determine how man tabs there are
+    var tabsize = form.find('li.ui-tabs-tab').length
+    //serialize form data into object
+    var formdata = transForm.serialize(config_id)
+    //transform data to domething managable
+    var data = [];
+    for (var i=0; i < tabsize; i++) {
+        data.push({
+            sql: formdata['sql' + i],
+            style: formdata['style' + i]
+        })
+    }
+    console.log('json data: ', JSON.stringify(data));
+    $.ajax({
+        url: this.baseURL + '/save/' + config_id,
+        type: 'POST',
+        contentType: 'application/json',
+        success: function(data, status, jqXHR) {
+            console.log('save success');
+        },
+        error: function(error) {
+            console.info("save error: ",error);
+        },
+        data: JSON.stringify(data)
+    });
+
+}
+
+//takes the code mirror element and copies the content of the editor to the textarea
+Sidebar.prototype.saveCodeMirror = function(target) {
+   var self = this;
+   var $target = target instanceof jQuery ? target : $(target);
+   if ($target.length > 0) {
+      $target.each(function (idx, el) {
+          var cm = self.getCodeMirror(el);
+          if (cm) {
+              //update text area with contents of editor
+              cm.save();
+          }
+      });
+   }
+   var cm = self.getCodeMirror(target);
+   if (cm) {
+      cm.save();
+   }
 }
 
 //Refresh the CodeMirror object if it exists at the target
 Sidebar.prototype.refreshCodeMirror = function(target) {
    var self = this;
+   var $target = target instanceof jQuery ? target : $(target);
+   if ($target.length > 0) {
+      $target.each(function(idx, el) {
+         var cm = self.getCodeMirror(el);
+         if (cm) {
+            cm.refresh();
+         }
+      });
+   }
    var cm = self.getCodeMirror(target);
    if (cm) {
       cm.refresh();
@@ -154,7 +243,7 @@ Sidebar.prototype.addTab = function(name, icon, content) {
                <i class="fa fa-caret-left"></i>\
             </span>\
          </h1>\
-         <div id="sidebar-container"></div>\
+         <div class="sidebar-container"></div>\
       </div>\
    ');
 
@@ -163,7 +252,7 @@ Sidebar.prototype.addTab = function(name, icon, content) {
    var pane = $.parseHTML(_pane({name: name}));
 
    //reference content before adding to DOM
-   var tab_content = $(pane).find('#sidebar-container');
+   var tab_content = $(pane).find('.sidebar-container');
    self.tabs[name] = tab_content;
 
    //add to DOM

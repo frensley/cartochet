@@ -26,6 +26,7 @@
     "font-awesome": "4.6.3",
     "knockout": "^3.4.0",
     "codemirror": "^5.16.0",
-    "jquery-ui": "^1.12.0"
+    "jquery-ui": "^1.12.0",
+    "transForm.js": "trans-form#^1.1.0"
   }
 }

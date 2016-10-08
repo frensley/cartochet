@@ -5,44 +5,54 @@
    box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
-/*.tab-container {
-   width: 100%;
-   height: 95%;
-}*/
-/*.tab-container div {
+html, body {
    height: 100%;
-   width: 100%;
-   padding: 0em !important;
-}*/
-/*.sidebar-content {
+}
+
+.sidebar-content {
+   overflow-y: hidden;
+}
+
+.CodeMirror {
+  border: 1px solid #eee;
+  resize: none;
+}
+
+.sidebar-container {
    height: 100%;
-}*/
+}
+
+.editor-form {
+   background-color: red;
+}
+
 .sidebar-pane {
-   height: 95%;
+   height: 100%;
+   background: green;
 }
 
-/*#sidebar-container {
-   height: 100%;
+.editor-field {
+   height: 1.5em;
    width: 100%;
-}*/
-
-/*.editor-form {
-   height: 100%;
-   width: 100%;
-}*/
-/*.editor-field {
-   width: inherit;
-}*/
-
-.sql-editor {
-   height: 2.5em;
-   width: 100%;
-   height: 20%;
-   resize: none;
+   margin-bottom: .1em;
 }
 
-.style-editor {
-   height: 60%;
-   width: 100%;
-   resize: none;
+.tab-container {
+
+   background: yellow;
+}
+
+.tab-content {
+   padding: 0 !important;
+   height: 88%;
+}
+
+.sql-editor + .CodeMirror {
+   margin-top: 1em;
+   /*height: 200px;*/
+}
+
+.style-editor + .CodeMirror {
+   margin-top: 1em;
+   /*height: 600px;*/
 }
