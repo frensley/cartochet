@@ -32,8 +32,31 @@
            var map = new L.Map('map', {
                 maxZoom: 18
            });
+            //map has a _layers property - should we use it?
+            map.layers = {};
             //starting position of map
             map.setView(new L.LatLng(29.9891, -97.8772), 11, true);
+            map.on('layeradd', function(e) {
+                var layer = e.layer;
+                var configId = layer._layerGroupConfigId;
+                if (!map.layers.hasOwnProperty(configId)) {
+                    map.layers[configId] = {
+                        tileLayer: {},
+                        utfGrid: []
+                    }
+                }
+                if (layer._layerGroupType === 'tileLayer') {
+                    console.log('pushed tile layer: ', layer);
+                    map.layers[configId].tileLayer = layer;
+                }
+                if (layer._layerGroupType === 'utfGrid') {
+                    console.log('pushed utfgrid layer: ', layer);
+                    map.layers[configId].utfGrid.push(layer);
+                }
+            });
+            map.on('layerremove', function(e, layer) {
+                console.log('Implement me!! layer removed', e, layer);
+            });
 
             var viewer = new Viewer(map, baseURL);
 

@@ -1,22 +1,11 @@
 var Sidebar = function(map, baseURL) {
+    this.map = map;
     this.bar = L.control.sidebar('sidebar').addTo(map);
     this.baseURL = baseURL;
     this.tabs = {};
-    // $(window).resize(function(e) {
-    //    console.log("resized",e);
-    //    // $('.sidebar-pane .active').fitToParent();
-    //    // $('.sidebar-pane.active > .sidebar-container').fitToParent();
-    //    // $('.sidebar-pane.active > .sidebar-container > form').fitToParent();
-    //    //fit the active sidebar pane to the new sidebar content size
-    //    // $('.sidebar-pane .active').fitToParent({
-    //    //    height_offset: 600,
-    //    //    callback: function(newWidth, newHeight) {
-    //    //       console.log('height',newHeight);
-    //    //       $('.sidebar-pane.active > .sidebar-container > form')[0].css("height",newHeight);
-    //    //    }
-    //    // });
-    // });
+    this._t = L.Util.template;
 };
+
 
 Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    var self = this,
@@ -24,30 +13,30 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
        map_config = map_config;
 
    //form container
-   var _template_tmpl = _.template('\
-      <form id="<%= config_id %>" class="editor-form">\
-         <div id="tabs<%= layer_idx %>" class="tab-container">\
-            <input name="layer_name" type="text" value="<%= layer_name %>" class="editor-field" required>\
+   var _template_tmpl = '\
+      <form id="{config_id}" class="editor-form">\
+         <div id="tabs{layer_idx}" class="tab-container">\
+            <input name="layer_name" type="text" value="{layer_name}" class="editor-field" required>\
             <ul></ul>\
          </div>\
-         <input value="Save" type="button" id="<%= config_id %>_save">\
+         <input value="Save" type="button" id="{config_id}_save">\
       </form>\
-   ');
+   ';
 
    //layergroup config tab header
-   var _tab_header_tmpl = _.template('\
+   var _tab_header_tmpl = '\
       <li>\
-         <a href="#tabs<%= layer_idx %><%= index %>"><%= index %></a>\
+         <a href="#tabs{layer_idx}{index}">{index}</a>\
       </li>\
-   ');
+   ';
 
    //layergroup config tab content
-   var _tab_content_tmpl = _.template('\
-      <div id="tabs<%= layer_idx %><%= index %>" class="tab-content">\
-         <textarea class="sql-editor" id="sql<%= index %>" name="sql<%= index %>"><%= sql %></textarea>\
-         <textarea class="style-editor" id="style<%= index %>" name="style<%= index %>"><%= css %></textarea>\
+   var _tab_content_tmpl = '\
+      <div id="tabs{layer_idx}{index}" class="tab-content">\
+         <textarea class="sql-editor" id="{index}" name="sql{index}">{sql}</textarea>\
+         <textarea class="style-editor" id="style{index}" name="style{index}">{css}</textarea>\
       </div>\
-   ');
+   ';
 
 
 
@@ -59,7 +48,7 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    };
 
    //generate the form container for the sidebar tab
-   var content = $.parseHTML(_template_tmpl(context));
+   var content = $.parseHTML(self._t(_template_tmpl, context));
 
    //click handler for form save
    $(content).find("input[id=" + context.config_id + "_save]").on('click', function(e) {
@@ -76,9 +65,9 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
          css: layer.options.cartocss
       }
       //add tab header
-      $(content).find('ul').append(_tab_header_tmpl(context));
+      $(content).find('ul').append(self._t(_tab_header_tmpl,context));
       //add tab content
-      $(content).find('.tab-container').append(_tab_content_tmpl(context));
+      $(content).find('.tab-container').append(self._t(_tab_content_tmpl,context));
       console.log("layer:", JSON.stringify(layer, null, 2));
    });
 
@@ -149,17 +138,29 @@ Sidebar.prototype.savePanel = function(config_id) {
     }
     console.log('json data: ', JSON.stringify(data));
     $.ajax({
-        url: this.baseURL + '/save/' + config_id,
+        url: self._t("{base}/save/{id}",{base: this.baseURL, id: config_id}),
         type: 'POST',
         contentType: 'application/json',
         success: function(data, status, jqXHR) {
             console.log('save success');
+            self.refreshLayers(config_id);
         },
         error: function(error) {
             console.info("save error: ",error);
         },
         data: JSON.stringify(data)
     });
+
+Sidebar.prototype.refreshLayers = function(config_id) {
+    var self = this;
+    var layers = self.map.layers[config_id];
+
+    if (layers) {
+        console.log("refresh id", config_id);
+        layers.tileLayer._cacheId = Date.now();
+        layers.tileLayer.redraw();
+    }
+}
 
 }
 
