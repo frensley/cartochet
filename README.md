@@ -3,6 +3,11 @@ Simple client server example using Windshaft layer groups
 
 ## Database Setup
 
+## Import major aquifers
+>shp2pgsql -s 4269:3857 NEW_major_aquifers_dd.shp texas_major_aquifers sfrensley > major_aquifers.sql
+
+>psql -d sfrensley -f major_aquifers.sql
+
 ## Import census shapes:
 >shp2pgsql -s 4269:3857 cb_2015_us_state_500k.shp us_state sfrensley > us_state.sql
 

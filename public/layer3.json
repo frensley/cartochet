@@ -1,0 +1,35 @@
+{
+  "version": "1.0.1",
+  "config_id": "aquifer1",
+  "name": "Major Texas Aquifers",
+  "layers": [
+    {
+      "type": "mapnik",
+      "options": {
+        "cartocss_version": "2.1.1",
+        "cartocss":
+        "
+        #layer {
+      ::shape {
+      line-color: #f00;
+      line-width: 3;
+    }
+    ::label [zoom >= 16]{
+      text-name: [aq_name];
+      text-face-name: 'Arial Regular';
+      text-placement: line;
+    }
+  }
+    ",
+    "geom_column": "geom",
+    "sql": "select * from texas_major_aquifers",
+    "srid": 3857,
+    "interactivity": ["gid","address"],
+    "attributes": {
+      "id": "gid",
+      "columns": ["address"]
+    }
+    }
+  }
+  ]
+}
