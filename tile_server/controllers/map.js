@@ -5,6 +5,7 @@ var windshaft = require('../../node_modules/windshaft/lib/windshaft');
 var MapConfig = windshaft.model.MapConfig;
 
 var MapStoreMapConfigProvider = windshaft.model.provider.MapStoreMapConfig;
+var DummyMapConfigProvider = require('../../node_modules/windshaft/lib/windshaft/models/providers/dummy_mapconfig_provider');
 
 /**
  * @param app
@@ -111,11 +112,9 @@ MapController.prototype.create = function(req, res, prepareConfigFn) {
         function initLayergroup(err, requestMapConfig) {
             assert.ifError(err);
             //TODO: look at original class to figure out what this originally did?
-            // var mapConfig = MapConfig.create(requestMapConfig);
-            // console.log("mapconfig is: ", mapConfig)
-            // reg.params.token = mapConfig._id;
+            var mapConfig = MapConfig.create(requestMapConfig);
             self.mapBackend.createLayergroup(
-                mapConfig, req.params, new MapStoreMapConfigProvider(self.mapStore, req.params), this
+                mapConfig, req.params, new DummyMapConfigProvider(mapConfig, req.params), this
             );
         },
         function finish(err, response){
