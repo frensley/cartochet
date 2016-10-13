@@ -20,7 +20,7 @@
     "leaflet": "^1.0.0",
     "Leaflet.zoomdisplay": "*",
     "underscore": "^1.8.3",
-    "jquery": "2.2.4",
+    "jquery": "^3.1.1",
     "sidebar-v2": "^0.3.0",
     "Leaflet.UTFGrid": "https://github.com/consbio/Leaflet.UTFGrid.git",
     "font-awesome": "4.6.3",
