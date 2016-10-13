@@ -72,28 +72,30 @@ Viewer.prototype.initialize = function() {
 Viewer.prototype.setUtfGrid = function(baseURL, layers, configId, layerGroupId) {
     var scope = this;
     layers.forEach(function(layer, layerIndex) {
-        var utfGridLayer = L.utfGrid(baseURL + '/' + layerIndex + '/{z}/{x}/{y}.grid.json', {
-            resolution: 4,
-            pointerCursor: true,
-            mouseInterval: 66  // Delay for mousemove events
-        });
-        utfGridLayer._layerGroupId = layerGroupId;
-        utfGridLayer._layerGroupConfigId = configId;
-        utfGridLayer._layerGroupLayerId = layer.id;
-        utfGridLayer._layerGroupName = name;
-        utfGridLayer._layerGroupType = "utfGrid"
-        var popup = new L.popup();
-        utfGridLayer.on('click', function (e) {
-            if (e.data) {
-                popup.setLatLng(e.latlng)
-                .setContent(JSON.stringify(e.data))
-                .openOn(scope.map);
-                console.log('click', e.data);
-            } else {
-                console.log('click nothing');
-            }
-        });
-        scope.map.addLayer(utfGridLayer);
+        if (layer.options && layer.options.interactivity) {
+            var utfGridLayer = L.utfGrid(baseURL + '/' + layerIndex + '/{z}/{x}/{y}.grid.json', {
+                resolution: 4,
+                pointerCursor: true,
+                mouseInterval: 66  // Delay for mousemove events
+            });
+            utfGridLayer._layerGroupId = layerGroupId;
+            utfGridLayer._layerGroupConfigId = configId;
+            utfGridLayer._layerGroupLayerId = layer.id;
+            utfGridLayer._layerGroupName = name;
+            utfGridLayer._layerGroupType = "utfGrid"
+            var popup = new L.popup();
+            utfGridLayer.on('click', function (e) {
+                if (e.data) {
+                    popup.setLatLng(e.latlng)
+                        .setContent(JSON.stringify(e.data))
+                        .openOn(scope.map);
+                    console.log('click', e.data);
+                } else {
+                    console.log('click nothing');
+                }
+            });
+            scope.map.addLayer(utfGridLayer);
+        }
     });
 };
 
