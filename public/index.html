@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Windshaft test</title>
+    <title>Cartochet</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
@@ -11,8 +12,14 @@
     <script src="bower_components/Leaflet.UTFGrid/L.UTFGrid-min.js"></script>
     <script src="bower_components/Leaflet.zoomdisplay/dist/leaflet.zoomdisplay.js"></script>
     <script src="bower_components/sidebar-v2/js/leaflet-sidebar.min.js"></script>
+    <script src="bower_components/jsonlint/lib/jsonlint.js"></script>
     <script src="bower_components/codemirror/lib/codemirror.js"></script>
-
+    <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
+    <script src="bower_components/codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="bower_components/codemirror/addon/lint/lint.js"></script>
+    <script src="bower_components/codemirror/addon/lint/json-lint.js"></script>
+    <script src="bower_components/codemirror/mode/sql/sql.js"></script>
+    <script src="js/codemirror/cartocss.js"></script>
     <script src="js/viewer.js"></script>
     <script src="js/sidebar.js"></script>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
@@ -22,6 +29,9 @@
     <link rel="stylesheet" href="bower_components/Leaflet.zoomdisplay/dist/leaflet.zoomdisplay.css" />
     <link rel="stylesheet" href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" />
     <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="bower_components/codemirror/addon/lint/lint.css" />
+    <!--<link rel="stylesheet" href="css/smart-forms.css" />-->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/viewer.css" />
     <script>
         var baseURL = "http://localhost:4000/database/sfrensley/layergroup";
@@ -60,6 +70,15 @@
 
             var viewer = new Viewer(map, baseURL);
 
+            var myCodeMirror = CodeMirror.fromTextArea($('#editor')[0], {
+                lineNumbers: true,
+                matchBrackets: true,
+                gutters: ["CodeMirror-lint-markers"],
+                lint: true,
+                mode: "application/json"
+            });
+
+
         });
       </script>
 </head>
@@ -72,12 +91,13 @@
             </ul>
 
             <ul role="tablist">
+                <li><a href="#newlayer" role="tab"><i class="fa fa-plus"></i></a><</li>
                 <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
             </ul>
         </div>
 
         <!-- Tab panes -->
-        <div class="sidebar-content size-parent">
+        <div class="sidebar-content">
             <div class="sidebar-pane" id="home">
                 <h1 class="sidebar-header">
                     sidebar-v2
@@ -94,7 +114,35 @@
 
                 <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
             </div>
+            <div class="sidebar-pane" id="newlayer">
+                <h1 class="sidebar-header">Add Layer<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                    <div class="container-fluid">
 
+                        <div class="form-header header-primary">
+                            <h4><i class="fa fa-comments"></i>New Layer</h4>
+                        </div><!-- end .form-header section -->
+
+                        <form method="post" action="/" id="contact2">
+                            <div class="form-body">
+
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control" placeholder="Enter name...">
+                                </div><!-- end section -->
+
+                                <div class="form-group">
+                                    <label for="editor">Editor </label>
+                                    <textarea class="form-control" id="editor" name="editor"></textarea>
+                                </div><!-- end section -->
+
+                            </div><!-- end .form-body section -->
+                            <div class="form-footer">
+                                <button type="submit" class="button btn-primary">Submit</button>
+                            </div><!-- end .form-footer section -->
+                        </form>
+
+                    </div><!-- end .smart-forms section -->
+            </div>
             <div class="sidebar-pane" id="settings">
                 <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
             </div>

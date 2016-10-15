@@ -1,16 +1,11 @@
-* {
-   /*font: 14px/1.4 Sans-Serif;*/
-   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-   box-sizing: border-box;         /* Opera/IE 8+ */
-}
-
-html, body {
-   height: 100%;
-}
-
 .sidebar-content {
-   overflow-y: hidden;
+   /*overflow-y: hidden;*/
+}
+
+.sidebar-pane {
+   height: 100%;
+   background: green;
+   padding: 11px 5px;
 }
 
 .CodeMirror {
@@ -18,41 +13,29 @@ html, body {
   resize: none;
 }
 
-.sidebar-container {
-   height: 100%;
+.container-fluid {
+   padding: 0 0 0 0;
 }
 
 .editor-form {
    background-color: red;
 }
 
-.sidebar-pane {
-   height: 100%;
-   background: green;
-}
-
 .editor-field {
-   height: 1.5em;
-   width: 100%;
-   margin-bottom: .1em;
+   margin-bottom: 2px
 }
 
 .tab-container {
-
    background: yellow;
 }
 
 .tab-content {
-   padding: 0 !important;
-   height: 88%;
+   padding: 0 0 0 0 !important;
 }
 
-.sql-editor + .CodeMirror {
-   margin-top: 1em;
-   /*height: 200px;*/
-}
-
-.style-editor + .CodeMirror {
-   margin-top: 1em;
-   /*height: 600px;*/
+/*
+tooltip errors need to have a large z-index to get above the sidebar and map
+*/
+.CodeMirror-lint-tooltip {
+   z-index: 10000;
 }

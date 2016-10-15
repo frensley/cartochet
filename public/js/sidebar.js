@@ -14,13 +14,13 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
 
    //form container
    var _template_tmpl = '\
-      <form id="{config_id}" class="editor-form">\
-         <div id="tabs{layer_idx}" class="tab-container">\
-            <input name="layer_name" type="text" value="{layer_name}" class="editor-field" required>\
-            <ul></ul>\
-         </div>\
-         <input value="Save" type="button" id="{config_id}_save">\
-      </form>\
+          <form id="{config_id}" class="editor-form">\
+             <div id="tabs{layer_idx}" class="tab-container">\
+                <input name="layer_name" type="text" value="{layer_name}" class="form-control editor-field" required>\
+                <ul></ul>\
+             </div>\
+             <input value="Save" type="button" id="{config_id}_save" class="btn btn-primary">\
+          </form>\
    ';
 
    //layergroup config tab header
@@ -33,8 +33,14 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    //layergroup config tab content
    var _tab_content_tmpl = '\
       <div id="tabs{layer_idx}{index}" class="tab-content">\
-         <textarea class="sql-editor" id="{index}" name="sql{index}">{sql}</textarea>\
-         <textarea class="style-editor" id="style{index}" name="style{index}">{css}</textarea>\
+         <div class="form-group">\
+            <label for="sql{index}" class="field-label">SQL</label>\
+            <textarea class="sql-editor" id="{index}" name="sql{index}">{sql}</textarea>\
+         </div>\
+         <div class="form-group">\
+            <label for="style{index}" class="field-label">Style</label>\
+            <textarea class="style-editor" id="style{index}" name="style{index}">{css}</textarea>\
+         </div>\
       </div>\
    ';
 
@@ -78,7 +84,10 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    $("textarea.style-editor").each(function(idx, el) {
       if (!self.getCodeMirror(el)) {
          CodeMirror.fromTextArea(el, {
-            lineNumbers: true
+            lineNumbers: true,
+            matchBrackets: true,
+            gutters: ["CodeMirror-lint-markers"],
+            mode: 'cartocss'
          });
       }
    });
@@ -86,7 +95,8 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    $("textarea.sql-editor").each(function(idx, el) {
       if (!self.getCodeMirror(el)) {
          CodeMirror.fromTextArea(el, {
-            lineNumbers: true
+            lineNumbers: true,
+            mode: 'text/x-pgsql'
          });
       }
    });
@@ -248,7 +258,7 @@ Sidebar.prototype.addTab = function(name, icon, content) {
                <i class="fa fa-caret-left"></i>\
             </span>\
          </h1>\
-         <div class="sidebar-container"></div>\
+         <div class="container-fluid sidebar-container"></div>\
       </div>\
    ');
 
