@@ -24,7 +24,6 @@
     "Leaflet.UTFGrid": "https://github.com/consbio/Leaflet.UTFGrid.git",
     "font-awesome": "4.6.3",
     "codemirror": "^5.16.0",
-    "jquery-ui": "^1.12.1",
     "transForm.js": "trans-form#^1.1.0",
     "jsonlint": "^1.6.0",
     "bootstrap": "^3.3.7",

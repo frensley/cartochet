@@ -14,10 +14,9 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
    //form container
    var _template_tmpl = '\
           <form id="{map_id}" class="editor-form">\
-             <div id="tabs{layer_idx}" class="tab-container">\
-                <input name="layer_name" type="text" value="{layer_name}" class="form-control editor-field" required>\
-                <ul></ul>\
-             </div>\
+             <input name="layer_name" type="text" value="{layer_name}" class="form-control editor-field" required>\
+             <ul id="tabs{layer_idx}" class="nav nav-tabs" role="tablist"></ul>\
+             <div id= "tabs-content{layer_idx}" class="tab-content"></div>\
              <input value="Save" type="button" id="{map_id}_save" class="btn btn-primary">\
           </form>\
    ';
@@ -25,20 +24,20 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
    //layergroup config tab header
    var _tab_header_tmpl = '\
       <li>\
-         <a href="#tabs{layer_idx}{index}">{index}</a>\
+         <a id="navtab-{layer_idx}" href="#tabs{layer_idx}{index}" role="tab" data-toggle="tab">{index}</a>\
       </li>\
    ';
 
    //layergroup config tab content
    var _tab_content_tmpl = '\
-      <div id="tabs{layer_idx}{index}" class="tab-content">\
+      <div id="tabs{layer_idx}{index}" class="tab-pane">\
          <div class="form-group">\
             <label for="sql{index}" class="field-label">SQL</label>\
-            <textarea class="sql-editor" id="{index}" name="sql{index}">{sql}</textarea>\
+            <textarea class="editor sql-editor" id="{index}" name="sql{index}">{sql}</textarea>\
          </div>\
          <div class="form-group">\
             <label for="style{index}" class="field-label">Style</label>\
-            <textarea class="style-editor" id="style{index}" name="style{index}">{css}</textarea>\
+            <textarea class="editor style-editor" id="style{index}" name="style{index}">{css}</textarea>\
          </div>\
       </div>\
    ';
@@ -72,7 +71,7 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
       //add tab header
       $(content).find('ul').append(self._t(_tab_header_tmpl,context));
       //add tab content
-      $(content).find('.tab-container').append(self._t(_tab_content_tmpl,context));
+      $(content).find('.tab-content').append(self._t(_tab_content_tmpl,context));
       console.log("layer:", JSON.stringify(layer, null, 2));
    });
 
@@ -100,18 +99,30 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
       }
    });
 
-   //since CodeMirror can't figure out it's layout until the dom is visible, we refresh when the tab activates
-   //this does not apply to the first tab. We must use the sidebar 'content' event to refresh the first visiable tab
-   $(".tab-container").each(function(idx,el) {
-      $(el).tabs({
-         activate: function(event, ui) {
-            self.refreshCodeMirror($(ui.newPanel).find('textarea'));
-         }
-      });
-   });
+    //activate first tab
+   $('#tabs' + layer_idx + ' a:first').tab('show');
+
+
+    //since CodeMirror can't figure out it's layout until the dom is visible, we refresh when the tab activates
+    //this does not apply to the first tab. We must use the sidebar 'content' event to refresh the first visiable tab
+   $('a[data-toggle=tab]').off('shown.bs.tab');
+   $('a[data-toggle=tab]').on('shown.bs.tab', $.proxy(function(e) {
+       self = this;
+       var id = e.target.id;
+       //navtab-18
+       if (id && id.length > 6) {
+           var number = id.substring(7);
+           $('#tabs-content'+number+ ' .editor').each(function (index, el) {
+               console.log('tabs-content ' + number);
+               self.refreshCodeMirror(el);
+           });
+       }
+   }, this));
+
 
    //since CodeMirror can't figure out it's layout until the dom is visible, we refresh when the sidebar
    //widget shows the pane for the _first_ visible tab. Other need to be refreshed on activate.
+   self.bar.off('content');
    self.bar.on('content', function(event) {
       var self = this,
           id = event.id;
@@ -291,23 +302,7 @@ Sidebar.prototype.addTabContent = function(name, content) {
       while(tab_content.firstChild){
          $.empty(div.firstChild);
       }
+
       $(tab_content).append(content);
    }
-};
-
-//deprecated
-Sidebar.prototype.createElement = function(tagName, attributes, container) {
-   var start = new Date().getTime();
-   var el = document.createElement(tagName);
-   for (var attr in attributes) {
-      el.setAttribute(attr, attributes[attr]);
-   }
-
-	if (container) {
-		container.appendChild(el);
-	}
-   var end = new Date().getTime();
-   var time = end - start;
-   console.log('Element creation took ' + time);
-	return el;
 };
