@@ -142,12 +142,11 @@ o.load = function(id, callback) {
 /// @param callback function(err, id, known) called when save is completed
 ///
 o.save = function(map, callback) {
-   //accept map with and id already
+   //accept map with an id already
    var id = map.id();
-   var config_id = map._cfg.config_id;
    console.log("save mapconfig: ", JSON.stringify(map, null, 2));
-   this._pgCmd("INSERT INTO map_config (map_id, config_id, map_config) VALUES ($1,$2, $3) ON CONFLICT (config_id) DO UPDATE SET (map_id, map_config) = (EXCLUDED.map_id, EXCLUDED.map_config)",
-               [id, config_id, map.serialize()],
+   this._pgCmd("INSERT INTO map_config (map_id, map_config) VALUES ($1, $2) ON CONFLICT (map_id) DO UPDATE SET (map_config) = (EXCLUDED.map_config)",
+               [id, map.serialize()],
                function(err, result) {
                     console.log("saved map id: ", id);
                     callback(err);
@@ -155,7 +154,7 @@ o.save = function(map, callback) {
    );
 };
 
-// id is the config_id in map_config table
+// id is the map_id in map_config table
 // options is an array of objects that contain the updated sql and cartocss
 o.updateOptions = function(id, data, callback) {
     console.log("updating options for id", id);
@@ -167,14 +166,14 @@ o.updateOptions = function(id, data, callback) {
                 var set = jsonb_set("map_config", "{layers," + i + ", options, sql}", data.options[i].sql);
                 set = jsonb_set(set, "{layers," + i + ", options, cartocss}", data.options[i].style);
                 console.log('options' + i + ': ' + set);
-                this._pgCmd("UPDATE map_config SET map_config = " + set + " where config_id = '" + id + "'", [], function (err) {
+                this._pgCmd("UPDATE map_config SET map_config = " + set + " where map_id = '" + id + "'", [], function (err) {
                     console.log('updated options' + i);
                 });
             }
         }
         if (data.layer_name) {
             var set = jsonb_set("map_config", "{name}", data.layer_name);
-            this._pgCmd("UPDATE map_config SET map_config = " + set + " where config_id = '" + id + "'", [], function (err) {
+            this._pgCmd("UPDATE map_config SET map_config = " + set + " where map_id = '" + id + "'", [], function (err) {
                 console.log('updated layer name');
             });
         }

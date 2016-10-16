@@ -32,7 +32,7 @@ MapController.prototype.register = function(app) {
     app.get(app.base_url_mapconfig + '/:token/:z/:x/:y.:format', this.tile.bind(this));
     app.get(app.base_url_mapconfig + '/:token/:layer/:z/:x/:y.(:format)', this.layer.bind(this));
     app.get(app.base_url_mapconfig + '/list', this.listLayers.bind(this));
-    app.post(app.base_url_mapconfig + '/save/:cid', this.update.bind(this));
+    app.post(app.base_url_mapconfig + '/save/:mid', this.update.bind(this));
     app.get(app.base_url_mapconfig, this.createGet.bind(this));
     app.post(app.base_url_mapconfig, this.createPost.bind(this));
     app.get(app.base_url_mapconfig + '/:token/:layer/attributes/:fid', this.attributes.bind(this));
@@ -78,10 +78,10 @@ MapController.prototype.update = function(req, res) {
     var self = this;
     this._app.doCORS(res);
     var data = req.body;
-    var configid = req.params.cid;
+    var mapId = req.params.mid;
     console.log("MapController save: ", data);
-    console.log("MapController save cid: " + configid);
-    this.mapStore.updateOptions(configid, data, function(error, response) {
+    console.log("MapController save mid: " + mapId);
+    this.mapStore.updateOptions(mapId, data, function(error, response) {
         if (error) {
             self._app.sendError(res, { errors: [ error.message ] }, self._app.findStatusCode(error), 'LAYERGROUP', error);
         } else {

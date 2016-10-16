@@ -13,12 +13,12 @@ Viewer.prototype.initialize = function() {
       $.ajax({
          url: this.baseURL + '/list',
          success: function(data, status, jqXHR) {
-             _.each(data,function(config, index) {
+             $.each(data,function(index, config) {
                 //skip creating new layers for now
                 //scope.configureLayer(config.map_config);
                 //set map laters directly from list
-                scope.setMapLayer(config.map_id, config.map_config, config.map_config.name, config.map_config.config_id);
-                scope.sidebar.addLayerConfigEditor(index,config.map_config);
+                scope.setMapLayer(config.map_id, config.map_config);
+                scope.sidebar.addLayerConfigEditor(index, config.map_id, config.map_config);
              });
          },
          error: function(error) {
@@ -69,7 +69,7 @@ Viewer.prototype.initialize = function() {
 //      });
 // };
 
-Viewer.prototype.setUtfGrid = function(baseURL, layers, configId, layerGroupId) {
+Viewer.prototype.setUtfGrid = function(baseURL, layers, layerGroupId) {
     var scope = this;
     layers.forEach(function(layer, layerIndex) {
         if (layer.options && layer.options.interactivity) {
@@ -79,7 +79,6 @@ Viewer.prototype.setUtfGrid = function(baseURL, layers, configId, layerGroupId) 
                 mouseInterval: 66  // Delay for mousemove events
             });
             utfGridLayer._layerGroupId = layerGroupId;
-            utfGridLayer._layerGroupConfigId = configId;
             utfGridLayer._layerGroupLayerId = layer.id;
             utfGridLayer._layerGroupName = name;
             utfGridLayer._layerGroupType = "utfGrid"
@@ -102,15 +101,15 @@ Viewer.prototype.setUtfGrid = function(baseURL, layers, configId, layerGroupId) 
 
 /**
  * This sets a layer on the map. It's actually a windshaft layergroup, consisting of multiple layers
- * @param token
+ * @param mapId
  * @param metadata
  * @param name
  */
-Viewer.prototype.setMapLayer = function(token, metadata, name, configId) {
+Viewer.prototype.setMapLayer = function(mapId, metadata) {
     var scope = this;
     metadata = metadata || {};
     var metadataLayers = metadata.layers || [];
-    var tileBaseURL = scope.baseURL + '/' + token;
+    var tileBaseURL = scope.baseURL + '/' + mapId;
     var now = Date.now();
     var tileLayer = new L.tileLayer(tileBaseURL + '/{z}/{x}/{y}.png?cache_buster={cache}', {
         cache: function() {
@@ -119,10 +118,9 @@ Viewer.prototype.setMapLayer = function(token, metadata, name, configId) {
         }
     });
     tileLayer._cacheId = now;
-    tileLayer._layerGroupId = token;
-    tileLayer._layerGroupConfigId = configId;
+    tileLayer._layerGroupId = mapId;
     tileLayer._layerGroupType = "tileLayer";
     scope.map.addLayer(tileLayer);
-    scope.setUtfGrid(tileBaseURL, metadataLayers, configId, token);
-    this.map.layerControl.addOverlay(tileLayer, name);
+    scope.setUtfGrid(tileBaseURL, metadataLayers, mapId);
+    this.map.layerControl.addOverlay(tileLayer, metadata.name);
 };

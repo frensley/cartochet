@@ -7,19 +7,18 @@ var Sidebar = function(map, baseURL) {
 };
 
 
-Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
+Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
    var self = this,
-       layer_idx = index,
-       map_config = map_config;
+       layer_idx = index;
 
    //form container
    var _template_tmpl = '\
-          <form id="{config_id}" class="editor-form">\
+          <form id="{map_id}" class="editor-form">\
              <div id="tabs{layer_idx}" class="tab-container">\
                 <input name="layer_name" type="text" value="{layer_name}" class="form-control editor-field" required>\
                 <ul></ul>\
              </div>\
-             <input value="Save" type="button" id="{config_id}_save" class="btn btn-primary">\
+             <input value="Save" type="button" id="{map_id}_save" class="btn btn-primary">\
           </form>\
    ';
 
@@ -48,7 +47,7 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
 
    //generate a partial DOM from the templates to be appended to the sidebar
    var context = {
-      config_id : map_config.config_id,
+      map_id : map_id,
       layer_name : map_config.name,
       layer_idx: layer_idx
    };
@@ -57,13 +56,13 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    var content = $.parseHTML(self._t(_template_tmpl, context));
 
    //click handler for form save
-   $(content).find("input[id=" + context.config_id + "_save]").on('click', function(e) {
+   $(content).find("input[id=" + context.map_id + "_save]").on('click', function(e) {
       var self = this;
-      self.savePanel(context.config_id);
-      console.log('click ', context.config_id);
+      self.savePanel(context.map_id);
+      console.log('click ', context.map_id);
    }.bind(this));
    //for each layer in the layergroup generate a tab for each configuration
-   _.each(map_config.layers, function(layer, index) {
+   $.each(map_config.layers, function(index, layer) {
       var context = {
          index: index,
          layer_idx: layer_idx,
@@ -78,7 +77,7 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
    });
 
    //dynamically update the sidebar widget with the new content
-   self.addTab(map_config.config_id, "fa-map", content);
+   self.addTab(map_id, "fa-map", content);
 
    //make style editors into CodeMirror widgets if they aren't already one.
    $("textarea.style-editor").each(function(idx, el) {
@@ -124,16 +123,16 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_config) {
 
 }
 
-Sidebar.prototype.savePanel = function(config_id) {
+Sidebar.prototype.savePanel = function(map_id) {
     var self = this;
     //select form we are saving
-    var form = $('form[id='+config_id+']');
+    var form = $('form[id='+map_id+']');
     //transfer codemirror data to text areas
     self.saveCodeMirror(form.find('textarea'));
     //determine how man tabs there are
     var tabsize = form.find('li.ui-tabs-tab').length
     //serialize form data into object
-    var formdata = transForm.serialize(config_id)
+    var formdata = transForm.serialize(form[0])
     console.log("form data is : ", JSON.stringify(formdata));
     //transform data to domething managable
     var data = {
@@ -148,12 +147,12 @@ Sidebar.prototype.savePanel = function(config_id) {
     }
     console.log('json data: ', JSON.stringify(data));
     $.ajax({
-        url: self._t("{base}/save/{id}",{base: this.baseURL, id: config_id}),
+        url: self._t("{base}/save/{id}",{base: this.baseURL, id: map_id}),
         type: 'POST',
         contentType: 'application/json',
         success: function(data, status, jqXHR) {
             console.log('save success');
-            self.refreshLayers(config_id);
+            self.refreshLayers(map_id);
         },
         error: function(error) {
             console.info("save error: ",error);
@@ -161,12 +160,12 @@ Sidebar.prototype.savePanel = function(config_id) {
         data: JSON.stringify(data)
     });
 
-Sidebar.prototype.refreshLayers = function(config_id) {
+Sidebar.prototype.refreshLayers = function(map_id) {
     var self = this;
-    var layers = self.map.layers[config_id];
+    var layers = self.map.layers[map_id];
 
     if (layers) {
-        console.log("refresh id", config_id);
+        console.log("refresh id", map_id);
         layers.tileLayer._cacheId = Date.now();
         layers.tileLayer.redraw();
     }
@@ -239,32 +238,32 @@ Sidebar.prototype.addTab = function(name, icon, content) {
        tablists    = $('div.sidebar-tabs').find('ul');
 
    //create control for tab
-   var _control = _.template('\
+   var _control = '\
       <li>\
-         <a role="tab" href="#<%= name %>">\
-            <i class="fa <%= icon %>"></i>\
+         <a role="tab" href="#{name}">\
+            <i class="fa {icon}"></i>\
          </a>"\
       </li>\
-   ');
+   ';
    //apend control to DOM
-   $(tablists[0]).append(_control({name:name, icon: icon}));
+   $(tablists[0]).append(self._t(_control,{name:name, icon: icon}));
 
    //create content pane
-   var _pane = _.template('\
-      <div class="sidebar-pane" id="<%= name %>">\
+   var _pane = '\
+      <div class="sidebar-pane" id="{name}">\
          <h1 class="sidebar-header">\
-            <%= name %>\
+            <input name="layer_name" type="text" value="{name}" class="editor-field" required>\
             <span class="sidebar-close">\
                <i class="fa fa-caret-left"></i>\
             </span>\
          </h1>\
          <div class="container-fluid sidebar-container"></div>\
       </div>\
-   ');
+   ';
 
 
    //turn template into elements
-   var pane = $.parseHTML(_pane({name: name}));
+   var pane = $.parseHTML(self._t(_pane,{name: name}));
 
    //reference content before adding to DOM
    var tab_content = $(pane).find('.sidebar-container');

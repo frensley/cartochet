@@ -4,7 +4,6 @@
     <title>Cartochet</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="bower_components/transForm.js/src/transForm.js"></script>
@@ -20,6 +19,8 @@
     <script src="bower_components/codemirror/addon/lint/json-lint.js"></script>
     <script src="bower_components/codemirror/mode/sql/sql.js"></script>
     <script src="js/codemirror/cartocss.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="js/viewer.js"></script>
     <script src="js/sidebar.js"></script>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
@@ -30,8 +31,8 @@
     <link rel="stylesheet" href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" />
     <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
     <link rel="stylesheet" href="bower_components/codemirror/addon/lint/lint.css" />
-    <!--<link rel="stylesheet" href="css/smart-forms.css" />-->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css"/>
     <link rel="stylesheet" href="css/viewer.css" />
     <script>
         var baseURL = "http://localhost:4000/database/sfrensley/layergroup";
@@ -48,20 +49,20 @@
             map.setView(new L.LatLng(29.9891, -97.8772), 11, true);
             map.on('layeradd', function(e) {
                 var layer = e.layer;
-                var configId = layer._layerGroupConfigId;
-                if (!map.layers.hasOwnProperty(configId)) {
-                    map.layers[configId] = {
+                var mapId = layer._layerGroupId;
+                if (!map.layers.hasOwnProperty(mapId)) {
+                    map.layers[mapId] = {
                         tileLayer: {},
                         utfGrid: []
                     }
                 }
                 if (layer._layerGroupType === 'tileLayer') {
                     console.log('pushed tile layer: ', layer);
-                    map.layers[configId].tileLayer = layer;
+                    map.layers[mapId].tileLayer = layer;
                 }
                 if (layer._layerGroupType === 'utfGrid') {
                     console.log('pushed utfgrid layer: ', layer);
-                    map.layers[configId].utfGrid.push(layer);
+                    map.layers[mapId].utfGrid.push(layer);
                 }
             });
             map.on('layerremove', function(e, layer) {
