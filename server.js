@@ -3,7 +3,7 @@
 //
 // If you want to get something running quickly, follow the instructions for a seed DB in test/windshaft.test.sql
 
-var Server = require('./tile_server/tile_server.js');
+var Server = require('./server/tile_server.js');
 var _         = require('./node_modules/windshaft/node_modules/underscore');
 
 // Force 'development' environment
@@ -11,17 +11,20 @@ var ENV = 'development';
 var PORT = 4000;
 
 // set environment specific variables
-global.settings     = require('./tile_server/config/settings');
-global.environment  = require('./tile_server/config/environments/' + ENV);
+global.settings     = require('./server/config/settings');
+global.environment  = require('./server/config/environments/' + ENV);
 _.extend(global.settings, global.environment);
 
 var config = {
     base_url: '/database/:dbname/table/:table',
     base_url_mapconfig: '/database/:dbname/layergroup',
     grainstore: {
-                 datasource: {user:'sfrensley', host: '127.0.0.1', port: 5432}
+         datasource: {
+             user:'sfrensley',
+             host: '127.0.0.1',
+             port: 5432
+         }
     }, //see grainstore npm for other options
-    redis: {host: '127.0.0.1', port: 6379},
     enable_cors: true,
     debug: true,
     req2params: function(req, callback){

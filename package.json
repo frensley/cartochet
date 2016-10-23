@@ -6,7 +6,7 @@
   "scripts": {
     "server-debug": "./node_modules/.bin/supervisor node --debug=5858 server.js",
     "server": "./node_modules/.bin/supervisor server.js",
-    "client": "./node_modules/.bin/http-server ./public -a localhost -p 8080 -c-1",
+    "client": "./node_modules/.bin/http-server ./client -a localhost -p 8080 -c-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shane Frensley",
