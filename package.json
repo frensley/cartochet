@@ -6,7 +6,7 @@
   "scripts": {
     "server-debug": "./node_modules/.bin/supervisor node --debug=5858 server.js",
     "server": "./node_modules/.bin/supervisor server.js",
-    "client": "./node_modules/.bin/http-server ./client -a localhost -p 8080 -c-1",
+    "client": "./node_modules/.bin/http-server ./build_output -a localhost -p 8080 -c-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shane Frensley",
@@ -18,5 +18,11 @@
     "pg": "^6.0.1",
     "supervisor": "^0.11.0",
     "windshaft": "^2.4.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-bower": "0.0.13",
+    "gulp-main-bower-files": "^1.5.3",
+    "gulp-rimraf": "^0.2.0"
   }
 }

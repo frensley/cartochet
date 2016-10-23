@@ -1,5 +1,5 @@
 {
-  "directory": "client/components/",
+  "directory": "client/bower_components/",
   "name": "cartochet",
   "description": "Makes Windshaft and PostGIS easier to use",
   "main": "client/index.html",
@@ -21,13 +21,14 @@
     "Leaflet.zoomdisplay": "*",
     "jquery": "^3.1.1",
     "sidebar-v2": "^0.3.0",
-    "Leaflet.UTFGrid": "https://github.com/consbio/Leaflet.UTFGrid.git",
+    "Leaflet.UTFGrid": "git://github.com/consbio/Leaflet.UTFGrid.git",
     "font-awesome": "4.6.3",
     "codemirror": "^5.16.0",
     "transForm.js": "trans-form#^1.1.0",
     "jsonlint": "^1.6.0",
     "bootstrap": "^3.3.7",
     "bootstrap-validator": "^0.11.5",
-    "x-editable": "^1.5.1"
+    "x-editable": "^1.5.1",
+    "corslite": "git://github.com/mapbox/corslite.git"
   }
 }
