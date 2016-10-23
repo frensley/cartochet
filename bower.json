@@ -2,7 +2,7 @@
   "directory": "client/components/",
   "name": "cartochet",
   "description": "Makes Windshaft and PostGIS easier to use",
-  "main": "public/index.html",
+  "main": "client/index.html",
   "authors": [
     "Shane Frensley"
   ],
