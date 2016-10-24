@@ -1,7 +1,13 @@
-var gulp = require('gulp');
-var mainBowerFiles = require('gulp-main-bower-files');
-var bower = require('gulp-bower');
-var rm = require('gulp-rimraf');
+var gulp = require('gulp'),
+    mainBowerFiles = require('gulp-main-bower-files'),
+    bower = require('gulp-bower'),
+    refresh = require('gulp-livereload'),
+    rm = require('gulp-rimraf');
+
+
+var paths = {
+  src : ['client/css/**/*.css', 'client/js/**/*.js', 'client/*.html']
+};
 
 var build_output = "build_output";
 
@@ -17,7 +23,7 @@ gulp.task('extract bower', ['bower install'], function() {
     return gulp.src('./bower.json')
         .pipe(mainBowerFiles({
             base: 'bower_components',
-            //main: ['*.js', '*.css', 'dist/*.js', 'dist/*.css'],
+            main: ['*.js', '*.css', 'dist/*.js', 'dist/*.css'],
             overrides: {
                 'leaflet' : {
                     main: [
@@ -84,8 +90,14 @@ gulp.task('extract bower', ['bower install'], function() {
 });
 
 gulp.task('build src', ['extract bower'], function() {
-    return gulp.src(['client/css/**/*.css', 'client/js/**/*.js', 'client/*.html'], {base: 'client'})
-        .pipe(gulp.dest(build_output));
+    return gulp.src(paths.src, {base: 'client'})
+        .pipe(gulp.dest(build_output))
+        .pipe(refresh());
 });
 
 gulp.task('default', ['clean','build src']);
+
+gulp.task('watch', function() {
+    refresh.listen();
+    gulp.watch(paths.src, ['build src']);
+})
