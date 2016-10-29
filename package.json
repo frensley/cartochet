@@ -4,8 +4,8 @@
   "description": "Makes Windshaft and PostGIS easier to use",
   "main": "index.js",
   "scripts": {
-    "server-debug": "./node_modules/.bin/supervisor node --debug=5858 server.js",
-    "server": "./node_modules/.bin/supervisor server.js",
+    "server-debug": "./node_modules/.bin/supervisor node --debug=5858 server/main.js",
+    "server": "./node_modules/.bin/supervisor server/main.js",
     "client": "./node_modules/.bin/http-server ./build_output -a localhost -p 8080 -c-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
