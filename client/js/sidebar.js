@@ -1,4 +1,8 @@
-var Sidebar = function(map, baseURL) {
+require('codemirror/lib/codemirror.css')
+var codemirror = require('codemirror/lib/codemirror.js');
+var transForm = require('transForm.js/src/transForm.js')
+
+function Sidebar (map, baseURL) {
     this.map = map;
     this.bar = L.control.sidebar('sidebar').addTo(map);
     this.baseURL = baseURL;
@@ -81,7 +85,7 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
    //make style editors into CodeMirror widgets if they aren't already one.
    $("textarea.style-editor").each(function(idx, el) {
       if (!self.getCodeMirror(el)) {
-         CodeMirror.fromTextArea(el, {
+         codemirror.fromTextArea(el, {
             lineNumbers: true,
             matchBrackets: true,
             gutters: ["CodeMirror-lint-markers"],
@@ -92,7 +96,7 @@ Sidebar.prototype.addLayerConfigEditor = function(index, map_id, map_config) {
 
    $("textarea.sql-editor").each(function(idx, el) {
       if (!self.getCodeMirror(el)) {
-         CodeMirror.fromTextArea(el, {
+          codemirror.fromTextArea(el, {
             lineNumbers: true,
             mode: 'text/x-pgsql'
          });
@@ -306,3 +310,5 @@ Sidebar.prototype.addTabContent = function(name, content) {
       $(tab_content).append(content);
    }
 };
+
+module.exports = Sidebar;

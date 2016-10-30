@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     mainBowerFiles = require('gulp-main-bower-files'),
     bower = require('gulp-bower'),
     refresh = require('gulp-livereload'),
+    webpack = require('webpack-stream'),
     rm = require('gulp-rimraf');
 
 
@@ -89,15 +90,21 @@ gulp.task('extract bower', ['bower install'], function() {
         .pipe(gulp.dest(build_output + '/libs'));
 });
 
+gulp.task('bundle', ['build src'], function() {
+   return gulp.src('client/app.js')
+       .pipe(webpack(require('./webpack.config.js') ))
+       .pipe(gulp.dest(build_output));
+});
+
 gulp.task('build src', ['extract bower'], function() {
     return gulp.src(paths.src, {base: 'client'})
         .pipe(gulp.dest(build_output))
         .pipe(refresh());
 });
 
-gulp.task('default', ['clean','build src']);
+gulp.task('default', ['clean','bundle']);
 
 gulp.task('watch', function() {
     refresh.listen();
-    gulp.watch(paths.src, ['build src']);
+    gulp.watch(paths.src, ['bundle']);
 })

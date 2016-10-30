@@ -1,4 +1,10 @@
-var Viewer = function(map, baseURL) {
+require('sidebar-v2/css/leaflet-sidebar.css')
+require('sidebar-v2/js/leaflet-sidebar');
+require('leaflet-utfgrid/L.UTFGrid');
+
+var Sidebar = require('sidebar');
+
+function Viewer(map, baseURL) {
     this.map = map;
     this.map.layerControl = new L.control.layers({}, {}).addTo(map);
     this.baseURL = baseURL || "http://localhost:4000/database/sfrensley/layergroup";
@@ -124,3 +130,5 @@ Viewer.prototype.setMapLayer = function(mapId, metadata) {
     scope.setUtfGrid(tileBaseURL, metadataLayers, mapId);
     this.map.layerControl.addOverlay(tileLayer, metadata.name);
 };
+
+module.exports = Viewer;

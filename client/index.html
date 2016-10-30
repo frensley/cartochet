@@ -4,82 +4,10 @@
     <title>Cartochet</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="libs/jquery/dist/jquery.js"></script>
-    <script src="libs/transForm.js/src/transForm.js"></script>
-    <script src="libs/leaflet/dist/leaflet-src.js"></script>
-    <script src="libs/corslite/corslite.js"></script>
-    <script src="libs/Leaflet.UTFGrid/L.UTFGrid.js"></script>
-    <script src="libs/Leaflet.zoomdisplay/dist/leaflet.zoomdisplay-src.js"></script>
-    <script src="libs/sidebar-v2/js/leaflet-sidebar.js"></script>
-    <script src="libs/jsonlint/lib/jsonlint.js"></script>
-    <script src="libs/codemirror/lib/codemirror.js"></script>
-    <script src="libs/codemirror/mode/javascript/javascript.js"></script>
-    <script src="libs/codemirror/addon/edit/matchbrackets.js"></script>
-    <script src="libs/codemirror/addon/lint/lint.js"></script>
-    <script src="libs/codemirror/addon/lint/json-lint.js"></script>
-    <script src="libs/codemirror/mode/sql/sql.js"></script>
-    <script src="js/codemirror/cartocss.js"></script>
-    <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="libs/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
-    <script src="js/viewer.js"></script>
-    <script src="js/sidebar.js"></script>
-    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="libs/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="libs/Leaflet.zoomdisplay/dist/leaflet.zoomdisplay.css" />
-    <link rel="stylesheet" href="libs/sidebar-v2/css/leaflet-sidebar.css" />
-    <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="libs/codemirror/addon/lint/lint.css" />
-    <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="libs/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <script src="app.bundle.js"></script>
+    <link rel="stylesheet" href="app.bundle.css" />
     <link rel="stylesheet" href="css/viewer.css" />
-    <script>
-        var baseURL = "http://localhost:4000/database/sfrensley/layergroup";
 
-        $(document).ready(function() {
-
-            //new map
-           var map = new L.Map('map', {
-                maxZoom: 18
-           });
-            //map has a _layers property - should we use it?
-            map.layers = {};
-            //starting position of map
-            map.setView(new L.LatLng(29.9891, -97.8772), 11, true);
-            map.on('layeradd', function(e) {
-                var layer = e.layer;
-                var mapId = layer._layerGroupId;
-                if (!map.layers.hasOwnProperty(mapId)) {
-                    map.layers[mapId] = {
-                        tileLayer: {},
-                        utfGrid: []
-                    }
-                }
-                if (layer._layerGroupType === 'tileLayer') {
-                    console.log('pushed tile layer: ', layer);
-                    map.layers[mapId].tileLayer = layer;
-                }
-                if (layer._layerGroupType === 'utfGrid') {
-                    console.log('pushed utfgrid layer: ', layer);
-                    map.layers[mapId].utfGrid.push(layer);
-                }
-            });
-            map.on('layerremove', function(e, layer) {
-                console.log('Implement me!! layer removed', e, layer);
-            });
-
-            var viewer = new Viewer(map, baseURL);
-
-            var myCodeMirror = CodeMirror.fromTextArea($('#editor')[0], {
-                lineNumbers: true,
-                matchBrackets: true,
-                gutters: ["CodeMirror-lint-markers"],
-                lint: true,
-                mode: "application/json"
-            });
-
-
-        });
-      </script>
 </head>
 <body>
    <div id="sidebar" class="sidebar collapsed">
