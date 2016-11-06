@@ -1,39 +1,53 @@
 var gulp = require('gulp'),
-    bower = require('gulp-bower'),
-    refresh = require('gulp-livereload'),
     webpack = require('webpack-stream'),
-    rm = require('gulp-rimraf');
-
+    seq = require('run-sequence'),
+    wp_config = require('./webpack.config.js'),
+    merge = require('merge'),
+    plugins = require('gulp-load-plugins')({
+        rename: {
+            'gulp-rimraf' : 'rm'
+        }
+    });
 
 var paths = {
-  src : ['client/css/**/*.css', 'client/js/**/*.js', 'client/*.html']
+  src : ['client/css/**/*.css', 'client/*.html']
 };
 
 var build_output = "build_output";
 
 gulp.task('bower install', function() {
-    return bower({directory: 'bower_components'});
+    return plugins.bower({directory: 'bower_components'});
 });
 
 gulp.task('clean', function() {
-    return gulp.src(build_output + '/*').pipe(rm());
+    return gulp.src(build_output + '/*').pipe(plugins.rm());
 });
 
-gulp.task('bundle', ['build src'], function() {
+gulp.task('bundle', function() {
    return gulp.src('client/app.js')
-       .pipe(webpack(require('./webpack.config.js') ))
+       .pipe(webpack(wp_config ))
        .pipe(gulp.dest(build_output));
 });
 
-gulp.task('build src', function() {
+gulp.task('copy src', function() {
     return gulp.src(paths.src, {base: 'client'})
         .pipe(gulp.dest(build_output))
-        .pipe(refresh());
+        .pipe(plugins.livereload());
 });
 
-gulp.task('default', ['clean','bundle']);
+gulp.task('build', function(cb) {
+   seq('clean', ['bower install', 'copy src'], 'bundle', cb);
+});
+
+gulp.task('watch bundle', function() {
+    return gulp.src('client/app.js')
+        .pipe(webpack(merge( wp_config, { watch: true } )))
+        .pipe(gulp.dest(build_output));
+});
+
+gulp.task('default', ['build']);
 
 gulp.task('watch', function() {
-    refresh.listen();
+    plugins.livereload().listen();
     gulp.watch(paths.src, ['bundle']);
 });

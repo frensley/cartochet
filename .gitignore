@@ -39,3 +39,4 @@ jspm_packages
 bower_components
 
 build_output
+/.node-version

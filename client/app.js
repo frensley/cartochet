@@ -1,21 +1,21 @@
-require('leaflet/dist/leaflet.css')
-require('font-awesome/css/font-awesome.css')
-require('bootstrap/dist/css/bootstrap.css')
-require('x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css')
-require('bootstrap');
-require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable')
-require('Leaflet.zoomdisplay/dist/leaflet.zoomdisplay.css')
-require('Leaflet.zoomdisplay/dist/leaflet.zoomdisplay')
+import 'leaflet/dist/leaflet.css';
+import 'font-awesome/css/font-awesome.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css';
+import 'bootstrap';
+import 'x-editable/dist/bootstrap3-editable/js/bootstrap-editable';
+import 'Leaflet.zoomdisplay/dist/leaflet.zoomdisplay.css';
+import 'Leaflet.zoomdisplay/dist/leaflet.zoomdisplay';
 
-require('codemirror/lib/codemirror.css')
-var codemirror = require('codemirror/lib/codemirror');
-require('codemirror/mode/javascript/javascript');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/lint/lint.css');
-require('codemirror/addon/lint/lint');
-require('codemirror/addon/lint/json-lint')
-require('codemirror/mode/sql/sql')
-require('codemirror/cartocss')
+import 'codemirror/lib/codemirror.css';
+import codemirror from 'codemirror/lib/codemirror';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/lint/lint.css';
+import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/lint/json-lint';
+import 'codemirror/mode/sql/sql';
+import 'codemirror/cartocss';
 
 var Viewer = require('viewer');
 

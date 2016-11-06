@@ -1,6 +1,6 @@
-require('sidebar-v2/css/leaflet-sidebar.css')
-require('sidebar-v2/js/leaflet-sidebar');
-require('leaflet-utfgrid/L.UTFGrid');
+import 'sidebar-v2/css/leaflet-sidebar.css';
+import 'sidebar-v2/js/leaflet-sidebar';
+import 'leaflet-utfgrid/L.UTFGrid';
 
 var Sidebar = require('sidebar');
 
