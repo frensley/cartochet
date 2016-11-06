@@ -39,15 +39,10 @@ gulp.task('build', function(cb) {
    seq('clean', ['bower install', 'copy src'], 'bundle', cb);
 });
 
-gulp.task('watch bundle', function() {
+gulp.task('watch', function() {
     return gulp.src('client/app.js')
         .pipe(webpack(merge( wp_config, { watch: true } )))
         .pipe(gulp.dest(build_output));
 });
 
 gulp.task('default', ['build']);
-
-gulp.task('watch', function() {
-    plugins.livereload().listen();
-    gulp.watch(paths.src, ['bundle']);
-});

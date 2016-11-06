@@ -64,7 +64,7 @@ module.exports = {
         }),
         //extrace the css stream into this destination
         new ExtractTextPlugin("app.bundle.css"),
-        //requires that don't exist in the browser context
+        //ignore requires that don't exist in the browser context
         new webpack.IgnorePlugin(/fs/)
     ]
 };
