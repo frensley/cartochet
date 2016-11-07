@@ -42,6 +42,9 @@ gulp.task('build', function(cb) {
 gulp.task('watch', function() {
     return gulp.src('client/app.js')
         .pipe(webpack(merge( wp_config, { watch: true } )))
+        .on('error', function handleError() {
+            this.emit('end'); // Recover from errors
+        })
         .pipe(gulp.dest(build_output));
 });
 

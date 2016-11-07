@@ -1,4 +1,4 @@
-//some of the plugins require a higher nodejs than I have available
+//some of the plugins require a higher nodejs than is available in this project
 require("babel-register")({
     // Optional only regex - if any filenames **don't** match this regex then they
     // aren't compiled
@@ -20,6 +20,7 @@ require('es6-promise').polyfill();
 
 module.exports = {
 
+    devtool: "#source-map",
     output: {
         filename: "app.bundle.js"
     },

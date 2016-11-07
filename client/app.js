@@ -17,9 +17,9 @@ import 'codemirror/addon/lint/json-lint';
 import 'codemirror/mode/sql/sql';
 import 'codemirror/cartocss';
 
-var Viewer = require('viewer');
+import Viewer from 'Viewer';
 
-var baseURL = "http://localhost:4000/database/sfrensley/layergroup";
+const baseURL = "http://localhost:4000/database/sfrensley/layergroup";
 
 $(document).ready(function() {
     //new map
