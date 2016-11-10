@@ -30,7 +30,7 @@ $(document).ready(function() {
     map.layers = {};
     //starting position of map
     map.setView(new L.LatLng(29.9891, -97.8772), 11, true);
-    map.on('layeradd', function(e) {
+    map.on('layeradd', (e) => {
         var layer = e.layer;
         var mapId = layer._layerGroupId;
         if (!map.layers.hasOwnProperty(mapId)) {
@@ -48,7 +48,7 @@ $(document).ready(function() {
             map.layers[mapId].utfGrid.push(layer);
         }
     });
-    map.on('layerremove', function(e, layer) {
+    map.on('layerremove', (e, layer) => {
         console.log('Implement me!! layer removed', e, layer);
     });
 

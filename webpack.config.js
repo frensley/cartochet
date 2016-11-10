@@ -63,7 +63,7 @@ module.exports = {
             'corslite' : 'corslite',
             'jsonlint' : 'jsonlint'
         }),
-        //extrace the css stream into this destination
+        //extract the css stream into this destination
         new ExtractTextPlugin("app.bundle.css"),
         //ignore requires that don't exist in the browser context
         new webpack.IgnorePlugin(/fs/)

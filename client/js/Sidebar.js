@@ -59,13 +59,13 @@ class Sidebar {
         var content = $.parseHTML(self._t(_template_tmpl, context));
 
         //click handler for form save
-        $(content).find("input[id=" + context.map_id + "_save]").on('click', function(e) {
+        $(content).find("input[id=" + context.map_id + "_save]").on('click', ((e) => {
             var self = this;
             self.savePanel(context.map_id);
             console.log('click ', context.map_id);
-        }.bind(this));
+        }).bind(this));
         //for each layer in the layergroup generate a tab for each configuration
-        $.each(map_config.layers, function(index, layer) {
+        $.each(map_config.layers, (index, layer) => {
             var context = {
                 index: index,
                 layer_idx: layer_idx,
@@ -83,7 +83,7 @@ class Sidebar {
         self.addTab(map_id, "fa-map", content);
 
         //make style editors into CodeMirror widgets if they aren't already one.
-        $("textarea.style-editor").each(function(idx, el) {
+        $("textarea.style-editor").each((idx, el) => {
             if (!self.getCodeMirror(el)) {
                 codemirror.fromTextArea(el, {
                     lineNumbers: true,
@@ -94,7 +94,7 @@ class Sidebar {
             }
         });
 
-        $("textarea.sql-editor").each(function(idx, el) {
+        $("textarea.sql-editor").each((idx, el) => {
             if (!self.getCodeMirror(el)) {
                 codemirror.fromTextArea(el, {
                     lineNumbers: true,
@@ -110,28 +110,28 @@ class Sidebar {
         //since CodeMirror can't figure out it's layout until the dom is visible, we refresh when the tab activates
         //this does not apply to the first tab. We must use the sidebar 'content' event to refresh the first visiable tab
         $('a[data-toggle=tab]').off('shown.bs.tab');
-        $('a[data-toggle=tab]').on('shown.bs.tab', $.proxy(function(e) {
+        $('a[data-toggle=tab]').on('shown.bs.tab', ((e) => {
             self = this;
             var id = e.target.id;
             //navtab-18
             if (id && id.length > 6) {
                 var number = id.substring(7);
-                $('#tabs-content'+number+ ' .editor').each(function (index, el) {
+                $('#tabs-content'+number+ ' .editor').each((index, el) => {
                     console.log('tabs-content ' + number);
                     self.refreshCodeMirror(el);
                 });
             }
-        }, this));
+        }).bind(this));
 
 
         //since CodeMirror can't figure out it's layout until the dom is visible, we refresh when the sidebar
         //widget shows the pane for the _first_ visible tab. Other need to be refreshed on activate.
         self.bar.off('content');
-        self.bar.on('content', function(event) {
+        self.bar.on('content', (event) => {
             var self = this,
                 id = event.id;
             //find all the code mirror textareas and refresh them
-            $('#'+id+' textarea').each(function (index, el) {
+            $('#'+id+' textarea').each((index, el) => {
                 self.refreshCodeMirror(el);
             });
         }, this);
@@ -144,7 +144,7 @@ class Sidebar {
         //transfer codemirror data to text areas
         self.saveCodeMirror(form.find('textarea'));
         //determine how man tabs there are
-        var tabsize = form.find('li.ui-tabs-tab').length
+        var tabsize = form.find('ul.nav-tabs li').length
         //serialize form data into object
         var formdata = transForm.serialize(form[0])
         console.log("form data is : ", JSON.stringify(formdata));
@@ -190,7 +190,7 @@ class Sidebar {
         var self = this;
         var $target = target instanceof jQuery ? target : $(target);
         if ($target.length > 0) {
-            $target.each(function (idx, el) {
+            $target.each((idx, el) => {
                 var cm = self.getCodeMirror(el);
                 if (cm) {
                     //update text area with contents of editor
@@ -208,7 +208,7 @@ class Sidebar {
         var self = this;
         var $target = target instanceof jQuery ? target : $(target);
         if ($target.length > 0) {
-            $target.each(function(idx, el) {
+            $target.each((idx, el) => {
                 var cm = self.getCodeMirror(el);
                 if (cm) {
                     cm.refresh();
@@ -239,7 +239,7 @@ class Sidebar {
         return false;
     }
 
-    addTab = function(name, icon, content) {
+    addTab(name, icon, content) {
         var self = this,
             name = name,
             icon = icon || "fa fa-folder",
