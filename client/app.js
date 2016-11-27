@@ -16,8 +16,8 @@ import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/lint/json-lint';
 import 'codemirror/mode/sql/sql';
 import 'codemirror/cartocss';
-
 import Viewer from 'Viewer';
+import 'file-loader?name=index.html!./index.html';
 
 const baseURL = "http://localhost:4000/database/sfrensley/layergroup";
 
