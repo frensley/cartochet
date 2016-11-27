@@ -6,7 +6,7 @@ import 'bootstrap';
 import 'x-editable/dist/bootstrap3-editable/js/bootstrap-editable';
 import 'Leaflet.zoomdisplay/dist/leaflet.zoomdisplay.css';
 import 'Leaflet.zoomdisplay/dist/leaflet.zoomdisplay';
-
+import Sortable from 'sb-sortablejs';
 import 'codemirror/lib/codemirror.css';
 import codemirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/javascript/javascript';
@@ -61,4 +61,6 @@ $(document).ready(function() {
         lint: true,
         mode: "application/json"
     });
+
+    var sortable = Sortable.create($('#tablist')[0]);
 });

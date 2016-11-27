@@ -49,6 +49,7 @@
     "leaflet-utfgrid": "^0.2.1",
     "merge": "^1.2.0",
     "run-sequence": "^1.2.2",
+    "sb-sortablejs": "*",
     "style-loader": "^0.13.1",
     "system": "^1.1.1",
     "url-loader": "^0.5.7",
