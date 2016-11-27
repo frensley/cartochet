@@ -31,8 +31,7 @@ gulp.task('bundle', function() {
 
 gulp.task('copy src', function() {
     return gulp.src(paths.src, {base: 'client'})
-        .pipe(gulp.dest(build_output))
-        .pipe(plugins.livereload());
+        .pipe(gulp.dest(build_output));
 });
 
 gulp.task('build', function(cb) {
